@@ -21,6 +21,6 @@ public class CategoryController {
         modelMap.addAttribute("categories",categories);
         for(Category x:categories)
             System.out.println(x);
-        return "login";
+        return "template";
     }
 }
