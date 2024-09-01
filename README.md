@@ -6,4 +6,5 @@ account MySQL server:
 * User: avnadmin
 * password: AVNS_jfijrHh9AlwIpwNz30Z
 * the SSL CA certificate: ca.pem
+  
 Connect MySQL workbench with MySQL server tutorial: https://aiven.io/docs/products/mysql/howto/connect-from-mysql-workbench
