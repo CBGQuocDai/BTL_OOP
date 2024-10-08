@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/postDetail.css}">
+    <script src="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.umd.js"></script>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+    <style>
+        .error{
+            margin-top:5px;
+            margin-inside: 0;
+            margin-bottom:5px;
+            padding: 0;
+            color:red;
+            font-size: 1.3em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <ul>
+        <li><img style="width: 70px" th:src="@{../file/logo.png}" alt=""></li>
+        <li><a href=""><h2>Post</h2></a></li>
+        <li><a href=""><h2>Question</h2></a></li>
+    </ul>
+        <ul class="right">
+        <li>
+            <div class="find">
+                <input type="text" placeholder="Search in FoxGraphy">
+                <img th:src="@{../file/searchIcon.png}" alt="">
+            </div>
+        </li>
+        <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
+        <li><a href="/hhh"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
+        <li><a href=""><img class="icon" id="avatar" th:src="@{../file/avatar_default.png}" alt=""></a></li>
+    </ul>
+    </div>
+    <div class="body">
+        <div class="sidebar" >
+            <ul>
+                <li class="vote">
+                    <img id="voteUp" th:src="@{../file/up.png}" alt="">
+                    <h1 id ="voteCount">+10</h1>
+                    <img id="voteDown" th:src="@{../file/down.png}" alt="">
+                </li>
+                <li><img th:src="@{../file/bookmark.png}" alt=""></li>
+                <li><img th:src="@{../file/report.png}" alt=""></li>
+            </ul>
+        </div>
+        <div class="post">
+            <div class="info">
+                <div class="left">
+                    <img th:src="@{../file/avatar_default.png}" alt="Author Image">
+                    <div class="author">
+                        <div class="name">
+                            <p>Đinh Quốc Đại</p>
+                            <form id="followForm">
+                                <input type="hidden"  name="authorId">
+                                <button type="button" id="followButton">Follow</button>
+                            </form>
+                        </div>
+                        <ul class="star">
+                            <li><img th:src="@{../file/follower.png}" alt=""> <span>3</span></li>
+                            <li><img th:src="@{../file/Blog.png}" alt=""> <span>3</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="timePublic">
+                    <p th:text="${post.getTimeUp()}"></p>
+                    <ul>
+                        <li><img th:src="@{../file/watch.png}" alt=""> <span>4</span></li>
+                        <li><img th:src="@{../file/comment.png}" alt=""> <span>4</span></li>
+                        <li><img th:src="@{../file/bookmark_filled.png}" alt=""> <span>4</span></li>
+                    </ul>
+                </div>
+            </div>
+            <h3 class="title" th:text="${post.getTitle()}"></h3>
+            <div class="content" th:utext="${post.getContent()}"></div>
+            <div class="tag">
+                <ul>
+                    <li th:each="iteam : ${tags}">
+                        <span th:text="${iteam}"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="comment">
+                <img th:src="@{../file/avatar_default.png}" alt="">
+                <form action="">
+                    <div class="comment-content">
+                        <textarea name="" id="editor" cols="30" rows="10"></textarea>
+                        <label for="editor"></label>
+                    </div>
+                    <button class="btn1" type="submit">Up</button>
+                </form>
+            </div>
+        </div>
+        <div class="index">
+
+        </div>
+    </div>
+    <script>
+        const {
+            ClassicEditor,
+            AccessibilityHelp,
+            Alignment,
+            AutoImage,
+            Autosave,
+            Base64UploadAdapter,
+            BlockQuote,
+            CloudServices,
+            Code,
+            CodeBlock,
+            Essentials,
+            GeneralHtmlSupport,
+            ImageBlock,
+            ImageInline,
+            ImageInsert,
+            ImageInsertViaUrl,
+            ImageResize,
+            ImageToolbar,
+            ImageUpload,
+            Indent,
+            IndentBlock,
+            List,
+            ListProperties,
+            Paragraph,
+            SelectAll,
+            SpecialCharacters,
+            TodoList,
+            Undo
+        } = CKEDITOR;
+
+        ClassicEditor
+            .create( document.querySelector( '#editor' ),{
+                toolbar: {
+                    items: [
+                        'undo',
+                        'redo',
+                        '|',
+                        'code',
+                        '|',
+                        'specialCharacters',
+                        'insertImage',
+                        'blockQuote',
+                        'codeBlock',
+                        '|',
+                        'alignment',
+                        '|',
+                        'bulletedList',
+                        'numberedList',
+                        'todoList',
+                        'outdent',
+                        'indent'
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+                plugins: [
+                    AccessibilityHelp,
+                    Alignment,
+                    AutoImage,
+                    Autosave,
+                    Base64UploadAdapter,
+                    BlockQuote,
+                    CloudServices,
+                    Code,
+                    CodeBlock,
+                    Essentials,
+                    GeneralHtmlSupport,
+                    ImageBlock,
+                    ImageInline,
+                    ImageInsert,
+                    ImageInsertViaUrl,
+                    ImageResize,
+                    ImageToolbar,
+                    ImageUpload,
+                    Indent,
+                    IndentBlock,
+                    List,
+                    ListProperties,
+                    Paragraph,
+                    SelectAll,
+                    SpecialCharacters,
+                    TodoList,
+                    Undo
+                ],
+                htmlSupport: {
+                    allow: [
+                        {
+                            name: /^.*$/,
+                            styles: true,
+                            attributes: true,
+                            classes: true
+                        }
+                    ]
+                },
+                image: {
+                    toolbar: ['imageTextAlternative', '|', 'resizeImage']
+                },
+
+                list: {
+                    properties: {
+                        styles: true,
+                        startIndex: true,
+                        reversed: true
+                    }
+                },
+                placeholder: 'Type or paste your content here!'
+            })
+            .then( /* ... */ )
+            .catch( /* ... */ );
+    </script>
+</body>
+</html>

@@ -20,7 +20,7 @@
 <body>
     <div class="header">
         <ul>
-            <li><img style="width: 70px" th:src="@{file/logo.png}" alt=""></li>
+            <li><img style="width: 70px" th:src="@{../file/logo.png}" alt=""></li>
             <li><a href=""><h2>Post</h2></a></li>
             <li><a href=""><h2>Question</h2></a></li>
         </ul>
@@ -28,19 +28,18 @@
             <li>
                 <div class="find">
                     <input type="text" placeholder="Search in FoxGraphy">
-                    <img th:src="@{file/searchIcon.png}" alt="">
+                    <img th:src="@{../file/searchIcon.png}" alt="">
                 </div>
             </li>
-            <li><img class="icon" th:src="@{file/notificationIcon.png}" alt=""></li>
-            <li><a href="/hhh"><img class="icon"  th:src="@{file/writeBlog.png}" alt=""></a></li>
-            <li><a href=""><img class="icon" id="avatar" th:src="@{file/avatar_default.png}" alt=""></a></li>
+            <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
+            <li><a href="/hhh"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
+            <li><a href=""><img class="icon" id="avatar" th:src="@{../file/avatar_default.png}" alt=""></a></li>
         </ul>
     </div>
-    <form class="form" th:action="@{/create}" th:object="${Post}" method="post" >
+    <form class="form" th:action="@{/Post/create}" th:object="${Post}" method="post" >
         <label for='title'></label>
         <input th:field="*{title}" th:value="${Post.getTitle()}"  id='title' type="text" placeholder="Title"/>
         <p class="error" th:if="${missingTitle}">Missing Title</p>
-
         <div class="tag">
             <input th:field="*{tags}" th:value="${Post.getTags()}" type="text" id ='tag' placeholder="Tags">
             <label for="tag"></label>

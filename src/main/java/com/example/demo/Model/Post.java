@@ -74,8 +74,13 @@ public class Post {
         this.content = content;
     }
 
-    public Timestamp getTimeUp() {
-        return timeUp;
+    public String getTimeUp() {
+        String ans=timeUp.toString();
+        ans=ans.substring(0,ans.length()-5);
+        int hour= Integer.parseInt(ans.substring(11,13));
+        if(hour <= 12) ans=ans+"AM";
+        else ans=ans+"PM";
+        return ans;
     }
 
     public void setTimeUp(Timestamp timeUp) {
