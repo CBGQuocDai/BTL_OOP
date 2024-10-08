@@ -3,16 +3,13 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-   url: "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb"
-   username: avnadmin
-   password: AVNS_jfijrHh9AlwIpwNz30Z
-    # url: "jdbc:mysql://localhost:3306/BlogDB"
-    # username: root
-    # password: 12345
+    url: "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb"
+    username: avnadmin
+    password: AVNS_jfijrHh9AlwIpwNz30Z
   jpa:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-     ddl-auto: update
+      ddl-auto: update
     show-sql: true
 
