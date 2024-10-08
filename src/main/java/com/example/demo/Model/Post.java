@@ -3,14 +3,13 @@ package com.example.demo.Model;
 
 import jakarta.persistence.Id;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
 
 import java.sql.Timestamp;
 
 
-public class PostModel {
+public class Post {
     @Id
     private String postId;
     private String userId;
@@ -23,7 +22,7 @@ public class PostModel {
     @NotEmpty(message = "Name is required")
     private String content;
     private Timestamp timeUp;
-    public PostModel(){
+    public Post(){
         this.type="post";
     }
 
@@ -74,8 +73,13 @@ public class PostModel {
         this.type = type;
     }
 
-    public Timestamp getTimeUp() {
-        return timeUp;
+    public String getTimeUp() {
+        String ans=timeUp.toString();
+        ans=ans.substring(0,ans.length()-5);
+        int hour= Integer.parseInt(ans.substring(11,13));
+        if(hour <= 12) ans=ans+"AM";
+        else ans=ans+"PM";
+        return ans;
     }
 
     public void setTimeUp(Timestamp timeUp) {
