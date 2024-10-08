@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo.Controller.User;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +11,9 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/signup")
-    public String Signup(){
-        return "signup";
-    }
+//    @GetMapping("/signup")
+//    public String Signup(){
+//        return "signup";
+//    }
 
 }

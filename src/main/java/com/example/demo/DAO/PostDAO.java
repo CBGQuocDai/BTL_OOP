@@ -1,10 +1,8 @@
 package com.example.demo.DAO;
 
-import com.example.demo.Model.PostModel;
+import com.example.demo.Model.Post;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.sql.*;
 
 public class PostDAO {
     
@@ -15,7 +13,7 @@ public class PostDAO {
     
     private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp) VALUES(?,?,?,?,?,?,NOW())";
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";
-
+    private static final String GET_ViEW_POST="";   
     public PostDAO(){}
     protected Connection getConnection() {
         Connection connection = null;
@@ -28,8 +26,7 @@ public class PostDAO {
         return connection;
     }
 
-    public void addPost(com.example.demo.Model.Post post){
-    public boolean addPost(Post post){
+    public void addPost(Post post){
         try {
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(ADD_A_POST);
@@ -46,21 +43,21 @@ public class PostDAO {
             throw new RuntimeException(e);
         }
     }
-    public com.example.demo.Model.Post selectPostById(String id){
-        com.example.demo.Model.Post post= new com.example.demo.Model.Post();
+    public Post selectPostById(int id){
+        Post post= new com.example.demo.Model.Post();
         try {
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(GET_POST_BY_ID);
-            ps.setString(1,id);
+            ps.setString(1,String.valueOf(id));
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
-                post.setPostId(rs.getString("postId"));
+                post.setPostId(rs.getInt("postId"));
                 post.setType(rs.getString("type"));
                 post.setTags(rs.getString("tags"));
                 post.setContent(rs.getString("content"));
                 post.setTitle(rs.getString("title"));
                 post.setTimeUp(Timestamp.valueOf(rs.getString("timeUp")));
-                post.setUserId(rs.getString("userId"));
+                post.setUserId(rs.getInt("userId"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

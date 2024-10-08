@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo.Controller.User;
 
 import org.springframework.web.bind.annotation.RestController;
 
