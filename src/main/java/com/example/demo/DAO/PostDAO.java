@@ -1,6 +1,6 @@
 package com.example.demo.DAO;
 
-import com.example.demo.Model.PostModel;
+import com.example.demo.Model.Post;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,13 +26,13 @@ public class PostDAO {
         return connection;
     }
 
-    public boolean addPost(PostModel post){
+    public boolean addPost(Post post){
         try {
             System.out.println("Hello world");
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(ADD_A_POST);
-            ps.setString(1,post.getPostId());
-            ps.setString(2,post.getUserId());
+            ps.setString(1,String.valueOf(post.getPostId()));
+            ps.setString(2,String.valueOf(post.getUserId()));
             ps.setString(3,post.getTitle());
             ps.setString(4,post.getTags());
             ps.setString(5,post.getType());
