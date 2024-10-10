@@ -1,12 +1,23 @@
 package com.example.demo.Controller.User;
 
-import org.springframework.stereotype.Controller;
+import com.example.demo.DAO.InteractionDAO;
+import com.example.demo.Model.Interaction;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.sql.SQLException;
+
+@RestController
+@RequestMapping("/api")
 public class InteractionController {
-//
-//    @PostMapping("/updateVote")
-//    public String updateVote(){
-//        return "";
-//    }
+    private final static InteractionDAO interactionDAO= new InteractionDAO();
+
+    @PostMapping("/vote")
+    public String updateInteraction(@RequestBody Interaction interaction) throws SQLException {
+
+        interactionDAO.setInteraction(interaction.getPostId(),interaction.getUserId(),interaction.getType());
+        return "done";
+    }
 }

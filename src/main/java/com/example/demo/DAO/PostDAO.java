@@ -5,7 +5,7 @@ import com.example.demo.Model.Post;
 import java.sql.*;
 
 public class PostDAO {
-    
+
 
     private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
     private String jdbcUsername = "avnadmin";
@@ -13,7 +13,7 @@ public class PostDAO {
     
     private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp) VALUES(?,?,?,?,?,?,NOW())";
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";
-    private static final String GET_ViEW_POST="";   
+
     public PostDAO(){}
     protected Connection getConnection() {
         Connection connection = null;
@@ -44,7 +44,7 @@ public class PostDAO {
         }
     }
     public Post selectPostById(int id){
-        Post post= new com.example.demo.Model.Post();
+        Post post= new Post();
         try {
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(GET_POST_BY_ID);
@@ -64,5 +64,6 @@ public class PostDAO {
         }
         return post;
     }
+
 }
 

@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 
 
 public class Post {
+    private static int cnt=0;
     @Id
     private int postId;
     private int userId;
@@ -24,6 +25,7 @@ public class Post {
     private Timestamp timeUp;
     public Post(){
         this.type="post";
+        this.postId=++cnt;
     }
 
     public int getPostId() {

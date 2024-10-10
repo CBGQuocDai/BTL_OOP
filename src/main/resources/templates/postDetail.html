@@ -32,19 +32,19 @@
             </div>
         </li>
         <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
-        <li><a href="/hhh"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
+        <li><a href="/Post/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
         <li><a href=""><img class="icon" id="avatar" th:src="@{../file/avatar_default.png}" alt=""></a></li>
     </ul>
     </div>
     <div class="body">
         <div class="sidebar" >
             <ul>
-                <li class="vote">
-                    <img id="voteUp" th:src="@{../file/up.png}" alt="">
-                    <h1 id ="voteCount">+10</h1>
-                    <img id="voteDown" th:src="@{../file/down.png}" alt="">
+                <li class="vote" >
+                    <img id="voteUp" th:src="${userVote==1} ? @{../file/voteUpSelect.png} : @{../file/voteUpDefault.png}" alt="">
+                    <h1 id ="voteCount" th:text="${vote}"></h1>
+                    <img id="voteDown" th:src="${userVote==-1} ? @{../file/voteDownSelect.png} : @{../file/voteDownDefault.png}" alt="">
                 </li>
-                <li><img th:src="@{../file/bookmark.png}" alt=""></li>
+                <li><img id="bookmark" th:src="${bookmark==0} ? @{../file/bookmark.png}: @{../file/bookmarkSelect.png}" alt=""></li>
                 <li><img th:src="@{../file/report.png}" alt=""></li>
             </ul>
         </div>
@@ -210,6 +210,116 @@
             })
             .then( /* ... */ )
             .catch( /* ... */ );
+    </script>
+    <script type="text/javascript">
+        const voteUp = document.getElementById("voteUp");
+        const voteDown = document.getElementById("voteDown");
+        const voteCount = document.getElementById("voteCount");
+        let currentVote = parseInt([[${vote}]]);
+        let userVote = parseInt([[${userVote}]]); // 0: chưa vote, 1: upvote, -1: downvote
+        // Các icon khi được chọn và không được chọn
+        const upvoteSelectedSrc = "../file/voteUpSelect.png";
+        const upvoteDefaultSrc = "../file/voteUpDefault.png";
+        const downvoteSelectedSrc = "../file/voteDownSelect.png";
+        const downvoteDefaultSrc = "../file/voteDownDefault.png";
+        // Hàm để cập nhật UI dựa trên trạng thái vote
+        function updateVoteUI() {
+            // Nếu người dùng đã chọn upvote
+            if (userVote === 1) {
+                voteUp.src = upvoteSelectedSrc;
+                voteDown.src = downvoteDefaultSrc;
+            }
+            // Nếu người dùng đã chọn downvote
+            else if (userVote === -1) {
+                voteUp.src = upvoteDefaultSrc;
+                voteDown.src = downvoteSelectedSrc;
+            }
+            // Nếu người dùng bỏ chọn vote
+            else {
+                voteUp.src = upvoteDefaultSrc;
+                voteDown.src = downvoteDefaultSrc;
+            }
+        }
+        // Sự kiện click cho nút upvote
+        voteUp.addEventListener("click", function() {
+            // Nếu người dùng đã upvote, nhấn lại để bỏ upvote
+            if (userVote === 1) {
+                currentVote -= 1;
+                userVote = 0;
+            }
+            // Nếu người dùng chưa vote hoặc đã downvote, thì nhấn để upvote
+            else {
+                if (userVote === -1) {
+                    currentVote += 2;
+                } else {
+                    currentVote += 1;
+                }
+                userVote = 1;
+            }
+
+            voteCount.textContent = currentVote;  // Cập nhật số vote trên UI
+            updateVoteUI();
+            sendInteractionRequest('up');
+        });
+        // Sự kiện click cho nút downvote
+        voteDown.addEventListener("click", function() {
+            if (userVote === -1) {
+                currentVote += 1;
+                userVote = 0;
+            }
+            else {
+                if (userVote === 1) {
+                    currentVote -= 2;
+                } else {
+                    currentVote -= 1;
+                }
+                userVote = -1;
+            }
+
+            voteCount.textContent = currentVote;  // Cập nhật số vote trên UI
+            updateVoteUI();  // Cập nhật icon
+            sendInteractionRequest('down');  // Gửi request lên server
+        });
+        // Hàm gửi request lên server
+        function sendInteractionRequest(Type) {
+            const data = {
+                type: Type, // 'up' hoặc 'down'
+                postId: [[${postID}]],
+                userId: [[${userID}]]
+            };
+
+            fetch('/api/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.statusText)
+                .then(data => {
+                    console.log("Server response:", data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        const bookmark= document.getElementById("bookmark");
+        let stateBookmark=  [[${bookmark}]];
+        const bookmarkDefault= "../file/bookmark.png";
+        const bookmarkSelect= "../file/bookmarkSelect.png";
+        function updateBookmarkUI(){
+            if(stateBookmark === 1){
+                bookmark.src= bookmarkSelect;
+            }
+            else bookmark.src= bookmarkDefault;
+        }
+        bookmark.addEventListener("click",function(){
+            if(stateBookmark === 1 ) stateBookmark=0;
+            else stateBookmark=1;
+            updateBookmarkUI();
+            sendInteractionRequest('bookmark');
+        });
     </script>
 </body>
 </html>

@@ -11,9 +11,9 @@ public class LoginController {
         return "login";
     }
 
-//    @GetMapping("/signup")
-//    public String Signup(){
-//        return "signup";
-//    }
+    @GetMapping("/signup")
+    public String Signup(){
+        return "signup";
+    }
 
 }

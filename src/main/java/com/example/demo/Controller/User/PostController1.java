@@ -1,5 +1,6 @@
 package com.example.demo.Controller.User;
 
+import com.example.demo.DAO.InteractionDAO;
 import com.example.demo.DAO.PostDAO;
 import com.example.demo.Model.Post;
 
@@ -9,6 +10,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 
 @Controller
 @RequestMapping("/Post")
@@ -16,6 +19,7 @@ public class PostController1 {
     static int postId=0;
     static boolean missingTitle=false,missingTags=false,missingContent=false;
     private final PostDAO postDAO =new PostDAO();
+    private final InteractionDAO interactionDAO = new InteractionDAO();
     private Post post=new Post();
     private Post pre_post=new Post();
     @GetMapping("/create")
@@ -34,6 +38,7 @@ public class PostController1 {
         missingTitle = result.hasFieldErrors("title");
         if(!result.hasErrors()) {
             postSubmit.setPostId(postId);
+            postId++;
             postDAO.addPost(postSubmit);
             post=new com.example.demo.Model.Post();
             pre_post = new com.example.demo.Model.Post();
@@ -46,9 +51,18 @@ public class PostController1 {
     }
 
     @GetMapping("/{id}")
-    public String postDetail(ModelMap modelMap, @PathVariable String id){
+    public String postDetail(ModelMap modelMap, @PathVariable String id) throws SQLException {
         post = postDAO.selectPostById(Integer.parseInt(id));
+        int vote= interactionDAO.getNumVote(id);
+        int userId=1;
+        int userVote= interactionDAO.getUserVote(Integer.parseInt(id),userId);
+        int stateBookmark= interactionDAO.getStateBookmark(Integer.parseInt(id),userId);
+        modelMap.addAttribute("vote",vote);
+        modelMap.addAttribute("userVote",userVote);
         modelMap.addAttribute("post",post);
+        modelMap.addAttribute("userID",userId);
+        modelMap.addAttribute("postID",id);
+        modelMap.addAttribute("bookmark",stateBookmark);
         String[] tags= post.getTags().split(",");
         modelMap.addAttribute("tags",tags);
         return "postDetail";
