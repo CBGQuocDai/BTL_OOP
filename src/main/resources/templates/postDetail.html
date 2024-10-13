@@ -33,7 +33,7 @@
         </li>
         <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
         <li><a href="/Post/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
-        <li><a href=""><img class="icon" id="avatar" th:src="@{../file/avatar_default.png}" alt=""></a></li>
+        <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
     </ul>
     </div>
     <div class="body">
@@ -51,10 +51,10 @@
         <div class="post">
             <div class="info">
                 <div class="left">
-                    <img th:src="@{../file/avatar_default.png}" alt="Author Image">
+                    <img th:src="@{${avatarAuthor}}" alt="Author Image">
                     <div class="author">
                         <div class="name">
-                            <p>Đinh Quốc Đại</p>
+                            <p th:text="${nameAuthor}"></p>
                             <form id="followForm">
                                 <input type="hidden"  name="authorId">
                                 <button type="button" id="followButton">Follow</button>
@@ -86,15 +86,16 @@
                 </ul>
             </div>
             <div class="comment">
-                <img th:src="@{../file/avatar_default.png}" alt="">
-                <form action="">
-                    <div class="comment-content">
-                        <textarea name="" id="editor" cols="30" rows="10"></textarea>
-                        <label for="editor"></label>
-                    </div>
-                    <button class="btn1" type="submit">Up</button>
+                <img th:src="@{${avatarUser}}" alt="">
+                <form action="" id="submitComment">
+                    <textarea class="comment-content" id ='editor'></textarea>
+                    <button id="upComment" class="btn1" type="submit">Up</button>
                 </form>
             </div>
+            <div class="postComment">
+
+            </div>
+
         </div>
         <div class="index">
 
@@ -320,6 +321,38 @@
             updateBookmarkUI();
             sendInteractionRequest('bookmark');
         });
+    </script>
+    <script type="text/javascript">
+        document.getElementById('submitComment').addEventListener('submit', function(event) {
+            // event.preventDefault(); // ngăn reload trang
+            const comment = document.getElementById('editor');
+            let content = comment.value;
+            let data = {
+                parentComment: 0,
+                content: content,
+                postId:[[${postId}]],
+                username:[[${username}]]
+            };
+
+            // Gửi dữ liệu về server bằng Fetch API
+            fetch('/createCmt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.statusText)
+                .then(data => {
+
+                    console.log(data)
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+
+        });
+
     </script>
 </body>
 </html>

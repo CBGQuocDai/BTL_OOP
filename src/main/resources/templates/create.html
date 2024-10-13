@@ -33,7 +33,7 @@
             </li>
             <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
             <li><a href="/hhh"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
-            <li><a href=""><img class="icon" id="avatar" th:src="@{../file/avatar_default.png}" alt=""></a></li>
+            <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
         </ul>
     </div>
     <form class="form" th:action="@{/Post/create}" th:object="${Post}" method="post" >

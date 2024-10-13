@@ -4,11 +4,22 @@ import java.sql.Timestamp;
 
 public class Interaction {
     private static int cnt=0;
-    private int interactionId,userId,postId;
+    private int interactionId,userId,postId,commentId;
     private String type;
     private Timestamp time;
+    public int getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
+    }
+
+
     public Interaction(){
         this.interactionId=++cnt;
+        this.commentId=-1;
+        this.postId=-1;
     }
     public int getInteractionId() {
         return interactionId;

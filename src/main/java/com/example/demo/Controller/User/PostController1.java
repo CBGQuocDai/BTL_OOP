@@ -1,9 +1,14 @@
 package com.example.demo.Controller.User;
 
+import com.example.demo.DAO.CommentDAO;
 import com.example.demo.DAO.InteractionDAO;
 import com.example.demo.DAO.PostDAO;
+import com.example.demo.DAO.UserDAO;
+import com.example.demo.Model.Comment;
 import com.example.demo.Model.Post;
 
+import com.example.demo.Model.User;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 @Controller
@@ -20,11 +26,17 @@ public class PostController1 {
     static boolean missingTitle=false,missingTags=false,missingContent=false;
     private final PostDAO postDAO =new PostDAO();
     private final InteractionDAO interactionDAO = new InteractionDAO();
+    private final CommentDAO commentDAO =new CommentDAO();
+    private final UserDAO userDAO = new UserDAO();
     private Post post=new Post();
     private Post pre_post=new Post();
     @GetMapping("/create")
-    public String create(ModelMap modelMap){
+    public String create(ModelMap modelMap, HttpSession httpSession) throws SQLException {
         post=pre_post;
+        User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
+
+//        System.out.println(user.getAvatar());
+        modelMap.addAttribute("avatarUser", user.getAvatar());
         modelMap.addAttribute("Post",post);
         modelMap.addAttribute("missingTitle",missingTitle);
         modelMap.addAttribute("missingTags",missingTags);
@@ -32,17 +44,17 @@ public class PostController1 {
         return "create";
     }
     @PostMapping("/create")
-    public String createPost(@Valid @ModelAttribute("Post") com.example.demo.Model.Post postSubmit , BindingResult result){
+    public String createPost(@Valid @ModelAttribute("Post") Post postSubmit , BindingResult result, HttpSession httpSession){
         missingContent = result.hasFieldErrors("content");
         missingTags = result.hasFieldErrors("tags");
         missingTitle = result.hasFieldErrors("title");
         if(!result.hasErrors()) {
-            postSubmit.setPostId(postId);
-            postId++;
+            postSubmit.setPostId(++postId);
+            postSubmit.setUserId((int)httpSession.getAttribute("userId"));
             postDAO.addPost(postSubmit);
-            post=new com.example.demo.Model.Post();
-            pre_post = new com.example.demo.Model.Post();
-            return "redirect:/Post/"+postId;
+            post=new Post();
+            pre_post = new Post();
+            return "redirect:/Post/"+(postId);
         }
         else {
             pre_post= postSubmit;
@@ -51,16 +63,24 @@ public class PostController1 {
     }
 
     @GetMapping("/{id}")
-    public String postDetail(ModelMap modelMap, @PathVariable String id) throws SQLException {
+    public String postDetail(ModelMap modelMap, @PathVariable String id,HttpSession httpSession) throws SQLException {
         post = postDAO.selectPostById(Integer.parseInt(id));
+        User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         int vote= interactionDAO.getNumVote(id);
-        int userId=1;
-        int userVote= interactionDAO.getUserVote(Integer.parseInt(id),userId);
-        int stateBookmark= interactionDAO.getStateBookmark(Integer.parseInt(id),userId);
+        int stateVote = interactionDAO.getUserVote(Integer.parseInt(id),user.getUserId());
+        int stateBookmark= interactionDAO.getStateBookmark(Integer.parseInt(id),user.getUserId());
+        User author = userDAO.getUserByUserId(post.getUserId());
+        ArrayList<Comment> cmt = commentDAO.getAllCommentByPostId(id);
+
+        modelMap.addAttribute("Comments",cmt);
+        modelMap.addAttribute("avatarAuthor",author.getAvatar());
+        modelMap.addAttribute("nameAuthor",author.getUsername());
+        modelMap.addAttribute("avatarUser",user.getAvatar());
         modelMap.addAttribute("vote",vote);
-        modelMap.addAttribute("userVote",userVote);
+        modelMap.addAttribute("userVote", stateVote);
         modelMap.addAttribute("post",post);
-        modelMap.addAttribute("userID",userId);
+        modelMap.addAttribute("userID",user.getUserId());
+        modelMap.addAttribute("username",user.getUsername());
         modelMap.addAttribute("postID",id);
         modelMap.addAttribute("bookmark",stateBookmark);
         String[] tags= post.getTags().split(",");
