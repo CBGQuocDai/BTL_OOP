@@ -55,7 +55,6 @@ body{
         .find{
             display: flex;
             align-items: center;
-
             background-color: white;
             height: 25px;
             object-fit: cover;
@@ -313,11 +312,13 @@ body{
                 flex-direction: column;
                 .comment-content {
                     width: 60vw;
+                    background-color: white;
+                    height: 100px;
                 }
 
                 .btn1{
                     margin-top: 10px;
-                    margin-left: calc(50vw - 100px);
+                    margin-left: calc(100% - 70px);
                     height: 30px;
                     width: 60px;
                     margin-right: 10px;
@@ -327,7 +328,123 @@ body{
                 }
             }
         }
+        .postComment{
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            padding:0;
+            gap:10px;
+            li{
+                padding: 13px;
+                border: 1px solid black;
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                .userCmt{
+                    display: flex;
+                    flex-direction: row;
+                    gap:15px;
+                    align-items: center;
+                    img{
+                        height: 35px;
+                        width: 35px;
+                        border-radius: 100%;
+                    }
+                    .nameUserCmt{
+                        display: flex;
+                        flex-direction: column;
+                        gap:5px;
 
+                        span{
+                            margin:0;
+                        }
+                    }
+                }
+                .contentCmt{
+                    padding-left:15px ;
+                    padding-top: 7px;
+                    padding-bottom: 7px;
+                }
+                .interaction{
+                    display: flex;
+                    flex-direction: row;
+                    padding-bottom: 4px;
+                    border-bottom: solid 1px #b5b5b5;
+                    gap:7px;
+                    button{
+                        background-color: white;
+                        border:none;
+                        cursor: pointer;
+                        padding: 0;
+                        img{
+                            height: 10px;
+                            width: 15px;
+                        }
+                    }
+                    span{
+                        cursor: pointer;
+                    }
+                }
+                .writeReply{
+                    img{
+                        display: none;
+                    }
+                    form {
+                        margin-left: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        box-sizing: border-box;
+                        .comment-content {
+                            margin-top: 10px;
+                            width: 93%;
+                            background-color: white;
+                            height: 50px;
+                            border: 1px solid black;
+                        }
+
+                        .btn1{
+                            margin-top: 10px;
+                            margin-left: calc(100% - 100px);
+                            height: 30px;
+                            width: 60px;
+                            margin-right: 10px;
+                            background-color: white;
+                            border-radius: 10px;
+                            cursor: pointer;
+                        }
+                    }
+                }
+                .allReply{
+                    .rep{
+                    border: none;
+                    .userReply{
+                        display: flex;
+                        flex-direction: row;
+                        gap:15px;
+                        align-items: center;
+                        img{
+                            height: 35px;
+                            width: 35px;
+                            border-radius: 100%;
+                        }
+                        .nameUserCmt{
+                            display: flex;
+                            flex-direction: column;
+                            gap:5px;
+
+                            span{
+                                margin:0;
+                            }
+                        }
+                    }
+                    .contentRep{
+                        padding-left:15px ;
+                        padding-top: 7px;
+                        padding-bottom: 7px;
+                    }}
+                }
+            }
+        }
     }
 
 }

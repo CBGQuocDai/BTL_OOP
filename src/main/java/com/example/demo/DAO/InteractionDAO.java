@@ -5,16 +5,16 @@ import com.example.demo.Model.Interaction;
 import java.sql.*;
 
 public class InteractionDAO {
-    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
-    private String jdbcUsername = "avnadmin";
-    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
+    private String jdbcUsername = "root";
+    private String jdbcPassword = "12345";
 
-    private static final String GET_VOTE_UP="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='up'";
-    private static final String GET_VOTE_DOWN="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='down'";
+    private static final String COUNT_VOTE_UP="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='up'";
+    private static final String COUNT_VOTE_DOWN ="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='down'";
     private static final String GET_INTERACTION="SELECT * FROM interaction WHERE postId=? AND userId= ? AND (type =? OR type =?)";
     private static final String DELETE_INTERACTION ="DELETE FROM interaction WHERE interactionId= ?";
     private static final String UPDATE_VOTE = "UPDATE interaction SET time = NOW() ,type =? WHERE interactionId=?";
-    private static final String ADD_INTERACTION = "INSERT INTO interaction (interactionId,userId,postId,type,time) VALUES (?,?,?,?,NOW())";
+    private static final String ADD_INTERACTION = "INSERT INTO interaction (interactionId,userId,commentId,postId,type,time) VALUES (?,?,-1,?,?,NOW())";
 
     public InteractionDAO(){}
     protected Connection getConnection() {
@@ -27,18 +27,18 @@ public class InteractionDAO {
         }
         return connection;
     }
-    // tương tác với vote
+    // tương tác vote bài viết
     public int getNumVote(String id) throws SQLException {
         Connection connection = getConnection();
 
-        PreparedStatement voteUp = connection.prepareStatement(GET_VOTE_UP);
+        PreparedStatement voteUp = connection.prepareStatement(COUNT_VOTE_UP);
         voteUp.setString(1,String.valueOf(id));
         ResultSet rs=voteUp.executeQuery();
         int cntVoteUp=0,cntVoteDown=0;
         if(rs.next()) {
             cntVoteUp = rs.getInt("count(DISTINCT interactionId)");
         }
-        PreparedStatement voteDown = connection.prepareStatement(GET_VOTE_DOWN);
+        PreparedStatement voteDown = connection.prepareStatement(COUNT_VOTE_DOWN);
         voteDown.setString(1,String.valueOf(id));
         ResultSet rs1= voteDown.executeQuery();
         if(rs1.next()){
@@ -66,7 +66,7 @@ public class InteractionDAO {
         }
         return vote;
     }
-    public int getUserVote(int postId, int userId) throws SQLException {
+    public int getStateVote(int postId, int userId) throws SQLException {
         Interaction vote = getInteraction(postId,userId,"up","down");
         if(vote.getType() == null) return 0;
         int userVote=0;
@@ -76,7 +76,8 @@ public class InteractionDAO {
         else userVote=-1;
         return userVote;
     }
-    public void setInteraction(int postId, int userId, String type) throws SQLException {
+    public void addInteractionPost(int postId, int userId, String type) throws SQLException {
+
         if(type.equals("bookmark")){
             Interaction bookmark = getInteraction(postId,userId,"bookmark","bookmark");
             Connection connection =getConnection();
@@ -120,11 +121,89 @@ public class InteractionDAO {
             }
         }
     }
-    // tương tác bookmark
+    // tương tác bookmark bài viết
     public int getStateBookmark(int postId,int userId) throws SQLException {
         Interaction bookmark = getInteraction(postId,userId,"bookmark","bookmark");
         if(bookmark.getType() == null) return 0;
         else return 1;
+    }
+
+    // tương tác với comment
+    private static final String COUNT_VOTE_DOWN_COMMENT="SELECT count(DISTINCT interactionId) FROM interaction WHERE commentId= ? AND type ='down'";
+    private static final String COUNT_VOTE_UP_COMMENT="SELECT count(DISTINCT interactionId) FROM interaction WHERE commentId= ? AND type ='up'";
+    private static final String GET_INTERACTION_COMMENT="SELECT * FROM interaction WHERE commentId=? AND userId= ? AND (type ='down' OR type ='up')";
+    private static final String DELETE_INTERACTION_COMMENT ="DELETE FROM interaction WHERE interactionId= ?";
+    private static final String UPDATE_VOTE_COMMENT = "UPDATE interaction SET time = NOW() ,type =? WHERE interactionId=?";
+    private static final String ADD_INTERACTION_COMMENT = "INSERT INTO interaction (interactionId,userId,postId,commentId,type,time) VALUES (?,?,-1,?,?,NOW())";
+
+    public int getNumVoteComment(int id) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement voteUp = connection.prepareStatement(COUNT_VOTE_UP_COMMENT);
+        voteUp.setString(1,String.valueOf(id));
+        ResultSet rs=voteUp.executeQuery();
+        int cntVoteUp=0,cntVoteDown=0;
+        if(rs.next()) {
+            cntVoteUp = rs.getInt("count(DISTINCT interactionId)");
+        }
+        PreparedStatement voteDown = connection.prepareStatement(COUNT_VOTE_DOWN_COMMENT);
+        voteDown.setString(1,String.valueOf(id));
+        ResultSet rs1= voteDown.executeQuery();
+        if(rs1.next()){
+            cntVoteDown= rs1.getInt("count(DISTINCT interactionId)");
+        }
+        return cntVoteUp - cntVoteDown;
+    }
+    private Interaction getInteractionComment(int commentId, int userId) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps= connection.prepareStatement(GET_INTERACTION_COMMENT);
+        ps.setString(1,String.valueOf(commentId));
+        ps.setString(2,String.valueOf(userId));
+        ResultSet rs = ps.executeQuery();
+        Interaction vote =new Interaction(); // chưa vote
+
+        if(rs.next()){
+            vote.setInteractionId(rs.getInt("interactionId"));
+            vote.setUserId(rs.getInt("userId"));
+            vote.setPostId(rs.getInt("postId"));
+            vote.setType(rs.getString("type"));
+            vote.setTime(rs.getTimestamp("time"));
+        }
+        return vote;
+    }
+    public int getStateVoteComment(int commentId, int userId) throws SQLException {
+        Interaction vote = getInteractionComment(commentId,userId);
+        if(vote.getType() == null) return 0;
+        int stateVote=0;
+        if(vote.getType().equals("up")){
+            stateVote=1;
+        }
+        else stateVote=-1;
+        return stateVote;
+    }
+    public void addInteractionComment(int commentId, int userId, String type) throws SQLException {
+            Interaction vote= getInteractionComment(commentId,userId);
+            Connection connection =getConnection();
+            if(vote.getType()== null){
+                PreparedStatement addVote = connection.prepareStatement(ADD_INTERACTION_COMMENT);
+                addVote.setString(1, String.valueOf(vote.getInteractionId()));
+                addVote.setString(2,String.valueOf(userId));
+                addVote.setString(3,String.valueOf(commentId));
+                addVote.setString(4,type);
+                addVote.execute();
+            }
+            else {
+                if(type.equals(vote.getType())) {
+                    PreparedStatement delete = connection.prepareStatement(DELETE_INTERACTION_COMMENT);
+                    delete.setString(1, String.valueOf(vote.getInteractionId()));
+                    delete.execute();
+                }
+                else {
+                    PreparedStatement update = connection.prepareStatement(UPDATE_VOTE_COMMENT);
+                    update.setString(1,type);
+                    update.setString(2,String.valueOf(vote.getInteractionId()));
+                    update.execute();
+                }
+            }
     }
 
 }

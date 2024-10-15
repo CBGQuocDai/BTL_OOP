@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" th:href="@{/css/postDetail.css}">
-    <script src="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.umd.js"></script>
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.umd.js"></script>
+
     <style>
         .error{
             margin-top:5px;
@@ -85,17 +86,55 @@
                     </li>
                 </ul>
             </div>
-            <div class="comment">
+            <div id ='writeComment' class="comment">
                 <img th:src="@{${avatarUser}}" alt="">
                 <form action="" id="submitComment">
-                    <textarea class="comment-content" id ='editor'></textarea>
+                    <div  class="comment-content" id ='editor'></div>
                     <button id="upComment" class="btn1" type="submit">Up</button>
                 </form>
             </div>
-            <div class="postComment">
+            <ul class="postComment" >
+                    <li th:each="comment: ${Comments}" th:if="${comment.getParentComment()}==0">
+                        <div class="userCmt">
+                            <img th:src="@{'/file/'+${comment.getUsername()}+'.png'}" alt="">
+                            <div class="nameUserCmt">
+                                <span th:text="${comment.getUsername()}"></span>
+                                <span th:text="${comment.getTimeUp()}"></span>
+                            </div>
+                        </div>
+                        <div  class="contentCmt" th:utext="${comment.getContent()}"></div>
+                        <div class="interaction">
+                            <button><img class="up" th:id="'U'+${comment.getCommentId()}" th:src="${comment.getStateVote()==1} ? @{/file/arrow_up_select.png}: @{/file/arrow-up_view.png}" alt=""></button>
+                            <span class="voteCnt" th:id="'state'+${comment.getStateVote()}" th:text="${comment.getCountVote()}"></span>
+                            <button><img class="down" th:id="'D'+${comment.getCommentId()}" th:src="${comment.getStateVote()==-1} ? @{/file/arrow_down_select.png}: @{/file/arrow-down_view.png}" alt=""></button>
+                            <span class="reply" th:id="${comment.getCommentId()}">Reply</span>
+                            <span id="reportCmt">Report</span>
+                        </div>
+                        <div class="writeReply"  th:id="'writeReply'+${comment.getCommentId()}">
 
-            </div>
-
+                        </div>
+                        <div class="allReply">
+                            <ul >
+                                <li class="rep" th:each="reply:${Comments}" th:if="${reply.getParentComment()}== ${comment.getCommentId()}">
+                                    <div class="userReply">
+                                        <img th:src="@{'/file/'+${reply.getUsername()}+'.png'}" alt="">
+                                        <div class="nameUserRep">
+                                            <span th:text="${reply.getUsername()}"></span>
+                                            <span th:text="${reply.getTimeUp()}"></span>
+                                        </div>
+                                    </div>
+                                    <div  class="contentRep" th:utext="${reply.getContent()}"></div>
+                                    <div class="interaction">
+                                        <button  ><img class="up" th:id="'U'+${reply.getCommentId()}" th:src="${reply.getStateVote()==1} ? @{/file/arrow_up_select.png}: @{/file/arrow-up_view.png}" alt=""></button>
+                                        <span class="voteCnt" th:id="'state'+${comment.getStateVote()}" th:text="${reply.getCountVote()}"></span>
+                                        <button ><img class="down" th:id="'D'+${reply.getCommentId()}" th:src="${reply.getStateVote()==-1} ? @{/file/arrow_down_select.png}: @{/file/arrow-down_view.png}" alt=""></button>
+                                        <span id="reportRep">Report</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+            </ul>
         </div>
         <div class="index">
 
@@ -103,51 +142,69 @@
     </div>
     <script>
         const {
-            ClassicEditor,
+            BalloonEditor,
             AccessibilityHelp,
-            Alignment,
+            Autoformat,
             AutoImage,
             Autosave,
+            BalloonToolbar,
             Base64UploadAdapter,
             BlockQuote,
+            Bold,
             CloudServices,
-            Code,
-            CodeBlock,
             Essentials,
-            GeneralHtmlSupport,
+            Heading,
             ImageBlock,
+            ImageCaption,
             ImageInline,
             ImageInsert,
             ImageInsertViaUrl,
             ImageResize,
+            ImageStyle,
+            ImageTextAlternative,
             ImageToolbar,
             ImageUpload,
             Indent,
             IndentBlock,
+            Italic,
+            Link,
+            LinkImage,
             List,
             ListProperties,
+            MediaEmbed,
             Paragraph,
+            PasteFromOffice,
             SelectAll,
-            SpecialCharacters,
+            Table,
+            TableCaption,
+            TableCellProperties,
+            TableColumnResize,
+            TableProperties,
+            TableToolbar,
+            TextTransformation,
             TodoList,
+            Underline,
             Undo
         } = CKEDITOR;
 
-        ClassicEditor
-            .create( document.querySelector( '#editor' ),{
+
+        BalloonEditor.create( document.querySelector( '#editor' ),{
                 toolbar: {
                     items: [
                         'undo',
                         'redo',
                         '|',
-                        'code',
+                        'heading',
                         '|',
-                        'specialCharacters',
+                        'bold',
+                        'italic',
+                        'underline',
+                        '|',
+                        'link',
                         'insertImage',
+                        'mediaEmbed',
+                        'insertTable',
                         'blockQuote',
-                        'codeBlock',
-                        '|',
-                        'alignment',
                         '|',
                         'bulletedList',
                         'numberedList',
@@ -155,51 +212,123 @@
                         'outdent',
                         'indent'
                     ],
-                    shouldNotGroupWhenFull: true
+                    shouldNotGroupWhenFull: false
                 },
                 plugins: [
                     AccessibilityHelp,
-                    Alignment,
+                    Autoformat,
                     AutoImage,
                     Autosave,
+                    BalloonToolbar,
                     Base64UploadAdapter,
                     BlockQuote,
+                    Bold,
                     CloudServices,
-                    Code,
-                    CodeBlock,
                     Essentials,
-                    GeneralHtmlSupport,
+                    Heading,
                     ImageBlock,
+                    ImageCaption,
                     ImageInline,
                     ImageInsert,
                     ImageInsertViaUrl,
                     ImageResize,
+                    ImageStyle,
+                    ImageTextAlternative,
                     ImageToolbar,
                     ImageUpload,
                     Indent,
                     IndentBlock,
+                    Italic,
+                    Link,
+                    LinkImage,
                     List,
                     ListProperties,
+                    MediaEmbed,
                     Paragraph,
+                    PasteFromOffice,
                     SelectAll,
-                    SpecialCharacters,
+                    Table,
+                    TableCaption,
+                    TableCellProperties,
+                    TableColumnResize,
+                    TableProperties,
+                    TableToolbar,
+                    TextTransformation,
                     TodoList,
+                    Underline,
                     Undo
                 ],
-                htmlSupport: {
-                    allow: [
+                balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
+                heading: {
+                    options: [
                         {
-                            name: /^.*$/,
-                            styles: true,
-                            attributes: true,
-                            classes: true
+                            model: 'paragraph',
+                            title: 'Paragraph',
+                            class: 'ck-heading_paragraph'
+                        },
+                        {
+                            model: 'heading1',
+                            view: 'h1',
+                            title: 'Heading 1',
+                            class: 'ck-heading_heading1'
+                        },
+                        {
+                            model: 'heading2',
+                            view: 'h2',
+                            title: 'Heading 2',
+                            class: 'ck-heading_heading2'
+                        },
+                        {
+                            model: 'heading3',
+                            view: 'h3',
+                            title: 'Heading 3',
+                            class: 'ck-heading_heading3'
+                        },
+                        {
+                            model: 'heading4',
+                            view: 'h4',
+                            title: 'Heading 4',
+                            class: 'ck-heading_heading4'
+                        },
+                        {
+                            model: 'heading5',
+                            view: 'h5',
+                            title: 'Heading 5',
+                            class: 'ck-heading_heading5'
+                        },
+                        {
+                            model: 'heading6',
+                            view: 'h6',
+                            title: 'Heading 6',
+                            class: 'ck-heading_heading6'
                         }
                     ]
                 },
                 image: {
-                    toolbar: ['imageTextAlternative', '|', 'resizeImage']
+                    toolbar: [
+                        'toggleImageCaption',
+                        'imageTextAlternative',
+                        '|',
+                        'imageStyle:inline',
+                        'imageStyle:wrapText',
+                        'imageStyle:breakText',
+                        '|',
+                        'resizeImage'
+                    ]
                 },
-
+                link: {
+                    addTargetToExternalLinks: true,
+                    defaultProtocol: 'https://',
+                    decorators: {
+                        toggleDownloadable: {
+                            mode: 'manual',
+                            label: 'Downloadable',
+                            attributes: {
+                                download: 'file'
+                            }
+                        }
+                    }
+                },
                 list: {
                     properties: {
                         styles: true,
@@ -207,11 +336,16 @@
                         reversed: true
                     }
                 },
-                placeholder: 'Type or paste your content here!'
+                placeholder: 'Type or paste your content here!',
+                table: {
+                    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
+                }
             })
             .then( /* ... */ )
             .catch( /* ... */ );
+
     </script>
+<!--    js cho tương tác ở sidebar-->
     <script type="text/javascript">
         const voteUp = document.getElementById("voteUp");
         const voteDown = document.getElementById("voteDown");
@@ -260,7 +394,7 @@
 
             voteCount.textContent = currentVote;  // Cập nhật số vote trên UI
             updateVoteUI();
-            sendInteractionRequest('up');
+            sendInteractionRequest('up',-1);
         });
         // Sự kiện click cho nút downvote
         voteDown.addEventListener("click", function() {
@@ -279,12 +413,13 @@
 
             voteCount.textContent = currentVote;  // Cập nhật số vote trên UI
             updateVoteUI();  // Cập nhật icon
-            sendInteractionRequest('down');  // Gửi request lên server
+            sendInteractionRequest('down',-1);  // Gửi request lên server
         });
         // Hàm gửi request lên server
-        function sendInteractionRequest(Type) {
+        function sendInteractionRequest(Type,x) {
             const data = {
                 type: Type, // 'up' hoặc 'down'
+                commentId:x,
                 postId: [[${postID}]],
                 userId: [[${userID}]]
             };
@@ -322,16 +457,20 @@
             sendInteractionRequest('bookmark');
         });
     </script>
+<!--    js cho viết bình luận-->
     <script type="text/javascript">
         document.getElementById('submitComment').addEventListener('submit', function(event) {
-            // event.preventDefault(); // ngăn reload trang
+
             const comment = document.getElementById('editor');
-            let content = comment.value;
+
+            let content = comment.textContent;
+            console.log(content)
+            comment.setAttribute('value','');
             let data = {
                 parentComment: 0,
                 content: content,
-                postId:[[${postId}]],
-                username:[[${username}]]
+                postId:[[${postID}]],
+                username:'[[${username}]]'
             };
 
             // Gửi dữ liệu về server bằng Fetch API
@@ -342,9 +481,9 @@
                 },
                 body: JSON.stringify(data)
             })
-                .then(response => response.statusText)
+                .then(response => response.text())
                 .then(data => {
-
+                    document.getElementsByClassName("ck-content").innerHTML = "";
                     console.log(data)
                 })
                 .catch((error) => {
@@ -353,6 +492,296 @@
 
         });
 
+    </script>
+<!--    js đóng mở và viết reply-->
+    <script type ="text/javascript">
+        // đóng mở chế độ reply
+        const replyBtn = document.getElementsByClassName('reply')
+
+        let stateReply=[]
+        for (let i = 0; i < replyBtn.length; i++)
+            stateReply[i]=0;
+        for (let i = 0; i < replyBtn.length; i++) {
+            replyBtn[i].addEventListener('click',() => {
+                stateReply[i]= (stateReply[i]+1)%2;
+
+                const writeReply= document.getElementById('writeReply'+String(replyBtn[i].getAttribute('id')));
+                if(stateReply[i] === 1){
+                    let id ='editor'+String(replyBtn[i].getAttribute('id'))
+                    writeReply.innerHTML="                <form action=\"\" id=\"submitReply\">\n" +
+                        "                    <div  class=\"comment-content\" id ="+id+"></div>\n" +
+                        "                    <button id=\"upReply\" class=\"btn1\" type=\"submit\">Up</button>\n" +
+                        "                </form>";
+                    BalloonEditor.create( document.querySelector( '#'+id),{
+                        toolbar: {
+                            items: [
+                                'undo',
+                                'redo',
+                                '|',
+                                'heading',
+                                '|',
+                                'bold',
+                                'italic',
+                                'underline',
+                                '|',
+                                'link',
+                                'insertImage',
+                                'mediaEmbed',
+                                'insertTable',
+                                'blockQuote',
+                                '|',
+                                'bulletedList',
+                                'numberedList',
+                                'todoList',
+                                'outdent',
+                                'indent'
+                            ],
+                            shouldNotGroupWhenFull: false
+                        },
+                        plugins: [
+                            AccessibilityHelp,
+                            Autoformat,
+                            AutoImage,
+                            Autosave,
+                            BalloonToolbar,
+                            Base64UploadAdapter,
+                            BlockQuote,
+                            Bold,
+                            CloudServices,
+                            Essentials,
+                            Heading,
+                            ImageBlock,
+                            ImageCaption,
+                            ImageInline,
+                            ImageInsert,
+                            ImageInsertViaUrl,
+                            ImageResize,
+                            ImageStyle,
+                            ImageTextAlternative,
+                            ImageToolbar,
+                            ImageUpload,
+                            Indent,
+                            IndentBlock,
+                            Italic,
+                            Link,
+                            LinkImage,
+                            List,
+                            ListProperties,
+                            MediaEmbed,
+                            Paragraph,
+                            PasteFromOffice,
+                            SelectAll,
+                            Table,
+                            TableCaption,
+                            TableCellProperties,
+                            TableColumnResize,
+                            TableProperties,
+                            TableToolbar,
+                            TextTransformation,
+                            TodoList,
+                            Underline,
+                            Undo
+                        ],
+                        balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
+                        heading: {
+                            options: [
+                                {
+                                    model: 'paragraph',
+                                    title: 'Paragraph',
+                                    class: 'ck-heading_paragraph'
+                                },
+                                {
+                                    model: 'heading1',
+                                    view: 'h1',
+                                    title: 'Heading 1',
+                                    class: 'ck-heading_heading1'
+                                },
+                                {
+                                    model: 'heading2',
+                                    view: 'h2',
+                                    title: 'Heading 2',
+                                    class: 'ck-heading_heading2'
+                                },
+                                {
+                                    model: 'heading3',
+                                    view: 'h3',
+                                    title: 'Heading 3',
+                                    class: 'ck-heading_heading3'
+                                },
+                                {
+                                    model: 'heading4',
+                                    view: 'h4',
+                                    title: 'Heading 4',
+                                    class: 'ck-heading_heading4'
+                                },
+                                {
+                                    model: 'heading5',
+                                    view: 'h5',
+                                    title: 'Heading 5',
+                                    class: 'ck-heading_heading5'
+                                },
+                                {
+                                    model: 'heading6',
+                                    view: 'h6',
+                                    title: 'Heading 6',
+                                    class: 'ck-heading_heading6'
+                                }
+                            ]
+                        },
+                        image: {
+                            toolbar: [
+                                'toggleImageCaption',
+                                'imageTextAlternative',
+                                '|',
+                                'imageStyle:inline',
+                                'imageStyle:wrapText',
+                                'imageStyle:breakText',
+                                '|',
+                                'resizeImage'
+                            ]
+                        },
+                        link: {
+                            addTargetToExternalLinks: true,
+                            defaultProtocol: 'https://',
+                            decorators: {
+                                toggleDownloadable: {
+                                    mode: 'manual',
+                                    label: 'Downloadable',
+                                    attributes: {
+                                        download: 'file'
+                                    }
+                                }
+                            }
+                        },
+                        list: {
+                            properties: {
+                                styles: true,
+                                startIndex: true,
+                                reversed: true
+                            }
+                        },
+                        placeholder: 'Type or paste your content here!',
+                        table: {
+                            contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
+                        }
+                    })
+                        .then( /* ... */ )
+                        .catch( /* ... */ );
+                    document.getElementById("submitReply").addEventListener("submit",() =>{
+                        console.log("hello world")
+                        let content =document.getElementById(id).textContent;
+
+                        let data = {
+                            parentComment: replyBtn[i].getAttribute('id'),
+                            content: content,
+                            postId:[[${postID}]],
+                            username:'[[${username}]]'
+                        };
+                        fetch('/createCmt', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data)
+                        })
+                            .then(response => response.text())
+                            .then(data => {
+
+                                console.log(data)
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            })
+                    });
+                }
+                else {
+                    writeReply.innerHTML="";
+                }
+            })
+        }
+
+
+
+
+    </script>
+<!--    js tương tác vote comment và reply-->
+    <script type ="text/javascript">
+        //
+        const upBtn= document.getElementsByClassName('up');
+        const numVote =document.getElementsByClassName('voteCnt');
+        const downBtn=document.getElementsByClassName('down');
+        let stateVote= []
+        let countVote = []
+        for(let i=0;i<upBtn.length;i++){
+            const num= numVote[i];
+            let state = num.getAttribute('id')
+            state= state.substring(5,stateVote.length)
+            stateVote[i]=parseInt(state);
+            countVote[i]=parseInt(num.textContent);
+        }
+        const upvoteSelectedSrc2 = "../file/arrow_up_select.png";
+        const upvoteDefaultSrc2 = "../file/arrow-up_view.png";
+        const downvoteSelectedSrc2 = "../file/arrow_down_select.png";
+        const downvoteDefaultSrc2 = "../file/arrow-down_view.png";
+        for(let i=0;i<upBtn.length;i++){
+            const up= upBtn[i];
+            const num= numVote[i];
+            const down =downBtn[i];
+            let id =up.getAttribute('id');
+            id= id.substring(1,id.length)
+            function updateVoteCommentUI() {
+                // Nếu người dùng đã chọn upvote
+                if (stateVote[i] === 1) {
+                    up.src = upvoteSelectedSrc2;
+                    down.src = downvoteDefaultSrc2;
+                }
+                // Nếu người dùng đã chọn downvote
+                else if (stateVote[i] === -1) {
+                    up.src = upvoteDefaultSrc2;
+                    down.src = downvoteSelectedSrc2;
+                }
+                // Nếu người dùng bỏ chọn vote
+                else {
+                    up.src = upvoteDefaultSrc2;
+                    down.src = downvoteDefaultSrc2;
+                }
+            }
+            up.addEventListener('click',function (){
+                if (stateVote[i] === 1) {
+                    countVote[i] -= 1;
+                    stateVote[i] = 0;
+                }
+                // Nếu người dùng chưa vote hoặc đã downvote, thì nhấn để upvote
+                else {
+                    if (stateVote[i] === -1) {
+                        countVote[i] += 2;
+                    } else {
+                        countVote[i] += 1;
+                    }
+                    stateVote[i] = 1;
+                }
+                num.textContent = countVote[i];  // Cập nhật số vote trên UI
+                updateVoteCommentUI();
+                sendInteractionRequest('up',parseInt(id));
+            });
+            down.addEventListener('click',function (){
+                if (stateVote[i] === -1) {
+                    countVote[i] += 1;
+                    stateVote[i] = 0;
+                }
+                else {
+                    if (stateVote[i] === 1) {
+                        countVote[i] -= 2;
+                    } else {
+                        countVote[i] -= 1;
+                    }
+                    stateVote[i] = -1;
+                }
+                num.textContent = countVote[i];  // Cập nhật số vote trên UI
+                updateVoteCommentUI();
+                sendInteractionRequest('down',parseInt(id));
+            });
+        }
     </script>
 </body>
 </html>

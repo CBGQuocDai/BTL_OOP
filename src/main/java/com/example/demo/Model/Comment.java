@@ -9,7 +9,13 @@ public class Comment {
     static int cnt =0;
     @Id
     private int commentId;
-    private int parentComment,postId,countVote;
+    private int parentComment;
+    private int postId;
+    private int countVote;
+
+
+
+    private int stateVote;
     private String username;
     @NotEmpty
     private String content;
@@ -19,6 +25,13 @@ public class Comment {
         this.parentComment=0;
     }
 
+    public int getStateVote() {
+        return stateVote;
+    }
+
+    public void setStateVote(int stateVote) {
+        this.stateVote = stateVote;
+    }
 
     public int getCommentId() {
         return commentId;
@@ -68,8 +81,13 @@ public class Comment {
         this.content = content;
     }
 
-    public Timestamp getTimeUp() {
-        return timeUp;
+    public String getTimeUp() {
+        String ans=timeUp.toString();
+        ans=ans.substring(0,ans.length()-5);
+        int hour= Integer.parseInt(ans.substring(11,13));
+        if(hour <= 12) ans=ans+" AM";
+        else ans=ans+" PM";
+        return ans;
     }
 
     public void setTimeUp(Timestamp timeUp) {

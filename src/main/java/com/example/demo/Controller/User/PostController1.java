@@ -67,11 +67,15 @@ public class PostController1 {
         post = postDAO.selectPostById(Integer.parseInt(id));
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         int vote= interactionDAO.getNumVote(id);
-        int stateVote = interactionDAO.getUserVote(Integer.parseInt(id),user.getUserId());
+        int stateVote = interactionDAO.getStateVote(Integer.parseInt(id),user.getUserId());
         int stateBookmark= interactionDAO.getStateBookmark(Integer.parseInt(id),user.getUserId());
         User author = userDAO.getUserByUserId(post.getUserId());
         ArrayList<Comment> cmt = commentDAO.getAllCommentByPostId(id);
 
+        for(Comment c:cmt){
+            c.setCountVote(interactionDAO.getNumVoteComment(c.getCommentId()));
+            c.setStateVote(interactionDAO.getStateVoteComment(c.getCommentId(),user.getUserId()));
+        }
         modelMap.addAttribute("Comments",cmt);
         modelMap.addAttribute("avatarAuthor",author.getAvatar());
         modelMap.addAttribute("nameAuthor",author.getUsername());

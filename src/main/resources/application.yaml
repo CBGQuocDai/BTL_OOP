@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb"
-    username: avnadmin
-    password: AVNS_jfijrHh9AlwIpwNz30Z
+    url: "jdbc:mysql://localhost:3306/BlogDB"
+    username: root
+    password: 12345
   jpa:
     hibernate:
       naming:

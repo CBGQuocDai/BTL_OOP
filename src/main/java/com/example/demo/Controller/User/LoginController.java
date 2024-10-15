@@ -33,7 +33,7 @@ public class LoginController {
                 if(user.getRole().equals("user")){
                     httpSession.setAttribute("username",user.getUsername());
                     httpSession.setAttribute("userId",user.getUserId());
-                    return "redirect:/Post/create";
+                    return "redirect:/Post/1";
                 }
                 else return "redirect:/admin";
             }

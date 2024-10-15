@@ -16,8 +16,12 @@ public class InteractionController {
 
     @PostMapping("/vote")
     public String updateInteraction(@RequestBody Interaction interaction) throws SQLException {
-
-        interactionDAO.setInteraction(interaction.getPostId(),interaction.getUserId(),interaction.getType());
+        if(interaction.getCommentId()==-1) {
+            interactionDAO.addInteractionPost(interaction.getPostId(), interaction.getUserId(), interaction.getType());
+        }
+        else {
+            interactionDAO.addInteractionComment(interaction.getCommentId(), interaction.getUserId(), interaction.getType());
+        }
         return "done";
     }
 }

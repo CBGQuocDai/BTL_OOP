@@ -7,12 +7,14 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CommentDAO {
-    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
-    private String jdbcUsername = "avnadmin";
-    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
+    private String jdbcUsername = "root";
+    private String jdbcPassword = "12345";
 
     private final String ADD_COMMENT= "INSERT INTO comment(commentId,parentComment,postId,username,content,timeUP) VALUES(?,?,?,?,?,NOW())";
     private final String GET_ALL_COMMENT_BY_POSTID="SELECT * FROM comment WHERE postId= ?";
+
+
     protected Connection getConnection() {
         Connection connection = null;
         try {
@@ -25,6 +27,7 @@ public class CommentDAO {
     }
     public CommentDAO(){}
     public void addComment(Comment cmt) throws SQLException {
+
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(ADD_COMMENT);
         ps.setString(1,String.valueOf(cmt.getCommentId()));
@@ -33,6 +36,7 @@ public class CommentDAO {
         ps.setString(4,cmt.getUsername());
         ps.setString(5,cmt.getContent());
         ps.execute();
+
     }
     public ArrayList<Comment> getAllCommentByPostId(String postId) throws SQLException {
         Connection connection =getConnection();
@@ -40,8 +44,10 @@ public class CommentDAO {
         ps.setString(1,postId);
         ResultSet rs= ps.executeQuery();
         ArrayList<Comment> cmts= new ArrayList<>();
-        Comment cmt =new Comment();
+
         while(rs.next()){
+            Comment cmt =new Comment();
+            cmt.setCommentId(rs.getInt("commentId"));
             cmt.setParentComment(rs.getInt("parentComment"));
             cmt.setPostId(rs.getInt("postId"));
             cmt.setUsername(rs.getString("username"));
