@@ -162,7 +162,7 @@ body{
                             font-size: 1.3em;
                             display: flex;
                         }
-                        form{
+
                             button{
                                 padding-right: 10px;
                                 padding-left: 10px;
@@ -174,7 +174,6 @@ body{
                                 font-size: 1em;
                                 border-radius: 6px;
                             }
-                        }
 
                 }
                 .star{
@@ -200,7 +199,7 @@ body{
                         img{
                             height: 11px;
                             width: 11px;
-                            border-radius: 0px;
+                            border-radius: 0;
                         }
                     }
                 }
@@ -445,6 +444,59 @@ body{
                 }
             }
         }
+
     }
 
+}
+.reportForm{
+    background-color: rgba(235, 235, 235,0.8);
+    width: 100vw;
+    height: 100dvh;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    form {
+        background-color: #b5b5b5;
+        display: flex;
+        flex-direction: column;
+        width: 50vw;
+        box-sizing: border-box;
+        padding:10px;
+        border-radius: 10px;
+        .titleReport{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            p{
+                margin:0;
+            }
+            img{
+                width: 35px;
+                height: 35px;
+                cursor: pointer;
+            }
+        }
+        ul{
+            list-style: none;
+            padding:0;
+            display: flex;
+            flex-direction: column;
+            gap:7px;
+            li{
+                align-items: center;
+                input{
+                    margin: 0;
+                    margin-top:3px;
+                    margin-right: 7px;
+                }
+            }
+
+        }
+        .btnReport{
+            width: 50px;
+            margin-top: 15px;
+            margin-left: calc(100% - 60px);
+        }
+    }
 }

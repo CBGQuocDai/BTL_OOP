@@ -6,7 +6,6 @@
     <link rel="stylesheet" th:href="@{/css/postDetail.css}">
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
     <script src="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.umd.js"></script>
-
     <style>
         .error{
             margin-top:5px;
@@ -19,23 +18,40 @@
     </style>
 </head>
 <body>
+    <div id="hidden" style="display: none" class="reportForm">
+        <form >
+            <div class ="titleReport">
+                <p>Reason for reporting this content</p>
+                <img id="closedFormReport" th:src="@{/file/X.png}" alt="">
+            </div>
+            <ul>
+                <li><input type="radio" name="reason" value="Spam" checked>Spam</li>
+                <li><input type="radio" name="reason" value="Rules" >Rules Violation</li>
+                <li><input type="radio" name="reason" value="Harassment">Harassment</li>
+                <li><input type="radio" name="reason" value="Infringes copyright">Infringes copyright</li>
+                <li><input type="radio" name="reason" value="Poor Translation">Poor Translation</li>
+            </ul>
+            <textarea name="" id="contentReport" placeholder="Comment(max 255 characters)"></textarea>
+            <button name="" class="btnReport" id="sendReport"> Send </button>
+        </form>
+    </div>
     <div class="header">
         <ul>
-        <li><img style="width: 70px" th:src="@{../file/logo.png}" alt=""></li>
-        <li><a href=""><h2>Post</h2></a></li>
-        <li><a href=""><h2>Question</h2></a></li>
-    </ul>
+            <li><img style="width: 70px" th:src="@{../file/logo.png}" alt=""></li>
+            <li><a href=""><h2>Post</h2></a></li>
+            <li><a href=""><h2>Question</h2></a></li>
+        </ul>
         <ul class="right">
-        <li>
-            <div class="find">
-                <input type="text" placeholder="Search in FoxGraphy">
-                <img th:src="@{../file/searchIcon.png}" alt="">
-            </div>
-        </li>
-        <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
-        <li><a href="/Post/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
-        <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
-    </ul>
+            <li>
+                <div class="find">
+                    <input type="text" placeholder="Search in FoxGraphy">
+                    <img th:src="@{../file/searchIcon.png}" alt="">
+                </div>
+            </li>
+            <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
+            <li><a href="/Post/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
+            <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
+        </ul>
     </div>
     <div class="body">
         <div class="sidebar" >
@@ -46,7 +62,7 @@
                     <img id="voteDown" th:src="${userVote==-1} ? @{../file/voteDownSelect.png} : @{../file/voteDownDefault.png}" alt="">
                 </li>
                 <li><img id="bookmark" th:src="${bookmark==0} ? @{../file/bookmark.png}: @{../file/bookmarkSelect.png}" alt=""></li>
-                <li><img th:src="@{../file/report.png}" alt=""></li>
+                <li><img class="report" th:id="'P'+${postID}" th:src="@{../file/report.png}" alt=""></li>
             </ul>
         </div>
         <div class="post">
@@ -56,10 +72,7 @@
                     <div class="author">
                         <div class="name">
                             <p th:text="${nameAuthor}"></p>
-                            <form id="followForm">
-                                <input type="hidden"  name="authorId">
-                                <button type="button" id="followButton">Follow</button>
-                            </form>
+                            <button th:text="${stateFollow==1} ? 'following': 'follow'" id="followButton" ></button>
                         </div>
                         <ul class="star">
                             <li><img th:src="@{../file/follower.png}" alt=""> <span>3</span></li>
@@ -67,7 +80,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="timePublic">
                     <p th:text="${post.getTimeUp()}"></p>
                     <ul>
@@ -108,7 +120,7 @@
                             <span class="voteCnt" th:id="'state'+${comment.getStateVote()}" th:text="${comment.getCountVote()}"></span>
                             <button><img class="down" th:id="'D'+${comment.getCommentId()}" th:src="${comment.getStateVote()==-1} ? @{/file/arrow_down_select.png}: @{/file/arrow-down_view.png}" alt=""></button>
                             <span class="reply" th:id="${comment.getCommentId()}">Reply</span>
-                            <span id="reportCmt">Report</span>
+                            <span class="report" th:id="'C'+${comment.getCommentId()}">Report</span>
                         </div>
                         <div class="writeReply"  th:id="'writeReply'+${comment.getCommentId()}">
 
@@ -126,15 +138,16 @@
                                     <div  class="contentRep" th:utext="${reply.getContent()}"></div>
                                     <div class="interaction">
                                         <button  ><img class="up" th:id="'U'+${reply.getCommentId()}" th:src="${reply.getStateVote()==1} ? @{/file/arrow_up_select.png}: @{/file/arrow-up_view.png}" alt=""></button>
-                                        <span class="voteCnt" th:id="'state'+${comment.getStateVote()}" th:text="${reply.getCountVote()}"></span>
+                                        <span class="voteCnt" th:id="'state'+${reply.getStateVote()}" th:text="${reply.getCountVote()}"></span>
                                         <button ><img class="down" th:id="'D'+${reply.getCommentId()}" th:src="${reply.getStateVote()==-1} ? @{/file/arrow_down_select.png}: @{/file/arrow-down_view.png}" alt=""></button>
-                                        <span id="reportRep">Report</span>
+                                        <span class="report" th:id="'C'+${reply.getCommentId()}">Report</span>
                                     </div>
                                 </li>
                             </ul>
                         </div>
                     </li>
             </ul>
+
         </div>
         <div class="index">
 
@@ -497,7 +510,6 @@
     <script type ="text/javascript">
         // đóng mở chế độ reply
         const replyBtn = document.getElementsByClassName('reply')
-
         let stateReply=[]
         for (let i = 0; i < replyBtn.length; i++)
             stateReply[i]=0;
@@ -699,10 +711,6 @@
                 }
             })
         }
-
-
-
-
     </script>
 <!--    js tương tác vote comment và reply-->
     <script type ="text/javascript">
@@ -782,6 +790,117 @@
                 sendInteractionRequest('down',parseInt(id));
             });
         }
+    </script>
+<!--    script sử lý nút report-->
+    <script type ="text/javascript">
+        // cập nhật UI
+        const report =document.getElementsByClassName('report');
+        const formReport= document.getElementById('hidden');
+        const sendReport =document.getElementById('sendReport')
+        for(let i=0;i <report.length;i++){
+            report[i].addEventListener("click",function (){
+                if(formReport.style.display ==='none')
+                {
+                    formReport.style.display='flex';
+                    sendReport.name =report[i].getAttribute('id')
+                }
+            });
+        }
+        const closeForm =document.getElementById("closedFormReport")
+        closeForm.addEventListener('click', ()=> {
+            if(formReport.style.display ==='flex')
+            {
+                formReport.style.display='none';
+                sendReport.name='';
+            }
+        })
+        // gửi dữ liệu report về server
+        sendReport.addEventListener("click",(event) =>{
+            event.preventDefault();
+            let data = {
+                postId:-1,
+                commentId:-1,
+                reason: document.querySelector('input[name="reason"]:checked').value,
+                content: document.getElementById('contentReport').value
+            };
+            const typeReport =sendReport.getAttribute('name');
+            if(typeReport.charAt(0) ==='P'){
+                 data.postId=parseInt(typeReport.substring(1));
+            }
+            else{
+                data.commentId= parseInt(typeReport.substring(1));
+            }
+            console.log(data)
+            fetch('/sendReport', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if(formReport.style.display ==='flex')
+                    {
+                        formReport.style.display='none';
+                        sendReport.name='';
+                    }
+                    alert("send report success")
+
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                })
+        });
+
+    </script>
+<!--    script xử lý follow-->
+    <script>
+        const follow =document.getElementById('followButton');
+        let stateFollow =[[${stateFollow}]];
+        follow.addEventListener('click',(event) =>{
+           event.preventDefault();
+           stateFollow= (stateFollow+1)%2;
+            let data ={
+                userIdSrc:[[${userID}]],
+                userIdDst:[[${authorID}]],
+            }
+           if(stateFollow === 0){
+               follow.textContent="follow";
+               fetch('/follow/delete', {
+                   method: 'POST',
+                   headers: {
+                       'Content-Type': 'application/json'
+                   },
+                   body: JSON.stringify(data)
+               })
+                   .then(response => response.statusText)
+                   .then(data => {
+                       console.log("Server response:", data);
+                   })
+                   .catch((error) => {
+                       console.error('Error:', error);
+                   });
+           }
+           else {
+               follow.textContent = "following";
+               fetch('/follow/insert', {
+                   method: 'POST',
+                   headers: {
+                       'Content-Type': 'application/json'
+                   },
+                   body: JSON.stringify(data)
+               })
+                   .then(response => response.statusText)
+                   .then(data => {
+                       console.log("Server response:", data);
+                   })
+                   .catch((error) => {
+                       console.error('Error:', error);
+                   });
+           }
+        });
+
     </script>
 </body>
 </html>

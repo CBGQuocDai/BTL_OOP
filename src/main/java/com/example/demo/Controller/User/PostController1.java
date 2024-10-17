@@ -1,9 +1,6 @@
 package com.example.demo.Controller.User;
 
-import com.example.demo.DAO.CommentDAO;
-import com.example.demo.DAO.InteractionDAO;
-import com.example.demo.DAO.PostDAO;
-import com.example.demo.DAO.UserDAO;
+import com.example.demo.DAO.*;
 import com.example.demo.Model.Comment;
 import com.example.demo.Model.Post;
 
@@ -28,6 +25,7 @@ public class PostController1 {
     private final InteractionDAO interactionDAO = new InteractionDAO();
     private final CommentDAO commentDAO =new CommentDAO();
     private final UserDAO userDAO = new UserDAO();
+    private final FollowDAO followDAO = new FollowDAO();
     private Post post=new Post();
     private Post pre_post=new Post();
     @GetMapping("/create")
@@ -69,6 +67,8 @@ public class PostController1 {
         int vote= interactionDAO.getNumVote(id);
         int stateVote = interactionDAO.getStateVote(Integer.parseInt(id),user.getUserId());
         int stateBookmark= interactionDAO.getStateBookmark(Integer.parseInt(id),user.getUserId());
+
+        int stateFollow = followDAO.getStateFollow(user.getUserId(),post.getUserId());
         User author = userDAO.getUserByUserId(post.getUserId());
         ArrayList<Comment> cmt = commentDAO.getAllCommentByPostId(id);
 
@@ -78,10 +78,12 @@ public class PostController1 {
         }
         modelMap.addAttribute("Comments",cmt);
         modelMap.addAttribute("avatarAuthor",author.getAvatar());
+        modelMap.addAttribute("authorID",post.getUserId());
         modelMap.addAttribute("nameAuthor",author.getUsername());
         modelMap.addAttribute("avatarUser",user.getAvatar());
         modelMap.addAttribute("vote",vote);
         modelMap.addAttribute("userVote", stateVote);
+        modelMap.addAttribute("stateFollow",stateFollow);
         modelMap.addAttribute("post",post);
         modelMap.addAttribute("userID",user.getUserId());
         modelMap.addAttribute("username",user.getUsername());
