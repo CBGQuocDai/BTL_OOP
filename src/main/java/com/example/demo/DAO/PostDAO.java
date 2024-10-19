@@ -1,9 +1,14 @@
 package com.example.demo.DAO;
 
 import com.example.demo.Model.Post;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
+
+@Component
 public class PostDAO {
     private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
     private String jdbcUsername = "avnadmin";
@@ -11,6 +16,17 @@ public class PostDAO {
     
     private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp) VALUES(?,?,?,?,?,?,NOW())";
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";
+    private static final String GET_ALL_POST= "SELECT * FROM post";
+    private final String DELETE_POST = "DELETE FROM post WHERE postId = ?";
+
+    public void deletePostById (String id) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement ps = connection.prepareStatement(DELETE_POST);
+
+        ps.setString(1 , id);
+
+        ps.executeUpdate();
+    }
 
     public PostDAO(){}
     protected Connection getConnection() {
@@ -22,6 +38,31 @@ public class PostDAO {
             e.printStackTrace();
         }
         return connection;
+    }
+
+    public List<Post> getAllPost () {
+        List<Post> posts = new ArrayList<>();
+        try {
+            Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(GET_ALL_POST);
+
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()){
+                Post post = new Post();
+                post.setPostId(rs.getInt("postId"));
+                post.setType(rs.getString("type"));
+                post.setTags(rs.getString("tags"));
+                post.setContent(rs.getString("content"));
+                post.setTitle(rs.getString("title"));
+                post.setTimeUp(Timestamp.valueOf(rs.getString("timeUp")));
+                post.setUserId(rs.getInt("userId"));
+                posts.add(post);
+            }
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+        return posts;
     }
 
     public void addPost(Post post){
