@@ -48,65 +48,41 @@
           </div>
           <!-- /.box-header -->
           <div class="box-body table-responsive no-padding">
-            <table class="table table-hover">
-              <tbody><tr>
-                <th>STT</th>
-                <th>ID Post</th>
-                <th>Contents</th>
-                <th>Action</th>
-              </tr>
-              <tr>
-                <td>____</td>
-                <td>____</td>
-                <td>____</td>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>STT</th> <!-- Index for row number -->
+                <th>ID Post</th> <!-- postId -->
+                <th>User ID</th> <!-- userId -->
+                <th>Title</th> <!-- title -->
+                <th>Tags</th> <!-- tags -->
+                <th>Type</th> <!-- type -->
+                <th>Content</th> <!-- content -->
+                <th>Time Uploaded</th> <!-- timeUp -->
+                <th>Action</th> <!-- Edit/Delete actions -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Iterate over the list of posts -->
+            <tr th:each="post, stat : ${posts}">
+                <td th:text="${stat.index + 1}">1</td> <!-- Row index (STT) -->
+                <td th:text="${post.postId}">ID Post</td> <!-- Post ID -->
+                <td th:text="${post.userId}">User ID</td> <!-- User ID -->
+                <td th:text="${post.title}">Title</td> <!-- Title -->
+                <td th:text="${post.tags}">Tags</td> <!-- Tags -->
+                <td th:text="${post.type}">Type</td> <!-- Type -->
+                <td th:text="${post.content.length() > 100 ? post.content.substring(0, 100) + '...' : post.content}">
+                    Content
+                </td> <!-- Content (truncated) -->
+                <td th:text="${post.timeUp}">Time Uploaded</td> <!-- Time Uploaded -->
                 <td>
-                <a href="edit-menu.html" class="btn btn-success">Sửa</a>
-                <a href="" class="btn btn-danger">Xóa</a>
-                  
+                    <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Xoá</a>
                 </td>
-              </tr>
-              <tr>
-                <td>____</td>
-                <td>____</td>
-                <td>____</td>
-                <td>
-                <a href="" class="btn btn-success">Sửa</a>
-                <a href="" class="btn btn-danger">Xóa</a>
-                  
-                </td>
-              </tr>
-              <tr>
-                <td>____</td>
-                <td>____</td>
-                <td>____</td>
-                <td>
-                <a href="" class="btn btn-success">Sửa</a>
-                <a href="" class="btn btn-danger">Xóa</a>
-                  
-                </td>
-              </tr>
-              <tr>
-                <td>____</td>
-                <td>____</td>
-                <td>____</td>
-                <td>
-                <a href="" class="btn btn-success">Sửa</a>
-                <a href="" class="btn btn-danger">Xóa</a>
-                  
-                </td>
-              </tr>
-              <tr>
-                <td>____</td>
-                <td>____</td>
-                <td>____</td>
-                <td>
-                <a href="" class="btn btn-success">Sửa</a>
-                <a href="" class="btn btn-danger">Xóa</a>
-                  
-                </td>
-              </tr>
-            </tbody></table>
-          </div>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
           <!-- /.box-body -->
         </div>
         <!-- /.box -->
