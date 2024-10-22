@@ -22,7 +22,7 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/req/login")
+    @PostMapping("/login")
     public String postLogin(@ModelAttribute("user") User userC, BindingResult result, HttpSession httpSession) throws SQLException {
         boolean missingUsername =result.hasFieldErrors("username");
         boolean missingPassword =result.hasFieldErrors("password");
