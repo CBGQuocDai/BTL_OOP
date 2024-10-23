@@ -1,13 +1,14 @@
 CREATE Table report(
-                       reportId int not null primary KEY,
-                       postId int,
-                       commentId int,
-                       reason VARCHAR(255),
-                       content VARCHAR(255),
-                       time timestamp
+	reportId int not null primary KEY,
+    postId int,
+    commentId int,
+    reason VARCHAR(255),
+    content VARCHAR(255),
+    time timestamp
 );
 CREATE Table post(
                      postId int NOT NULL PRIMARY KEY,
+                     nameAuthor VARCHAR(50),
                      userId int,
                      title varchar(1024),
                      tags varchar(100),
@@ -19,15 +20,16 @@ CREATE Table interaction(
                             interactionId int primary key,
                             userId int,
                             postId int,
-                            commentId int,
+							commentId int,
                             Type varchar(255),
-                            time timestamp
+							time timestamp
 );
 Create Table comment (
                          commentId int primary key,
-                         parentComment int,
+							parentComment int,
                          postId int,
-                         username varchar(50),
+                         username VARCHAR(50),
+                         userId int,
                          content text,
                          timeUp timestamp
 );
@@ -42,18 +44,18 @@ CREATE TABLE user(
 
 );
 CREATE Table follow(
-                       followId int primary key,
-                       userIdSrc int, -- người đi follow
-                       userIdDst int, -- người được follow
-                       time timestamp
+                            followId int primary key,
+                            userIdSrc int, -- người đi follow
+                            userIdDst int, -- người được follow
+							time timestamp
 );
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(1,'user1','user1@gmail.com','12345',1,'/file/user1.png','user');
+values(1,'user1','user1@gmail.com','12345',1,'/file/1.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(2,'user2','user2@gmail.com','12345',1,'/file/user2.png','user');
+values(2,'user2','user2@gmail.com','12345',1,'/file/2.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(3,'user3','user3@gmail.com','12345',0,'/file/user3.png','user');
+values(3,'user3','user3@gmail.com','12345',0,'/file/3.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(4,'user4','user4@gmail.com','12345',0,'/file/user4.png','user');
+values(4,'user4','user4@gmail.com','12345',0,'/file/4.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(5,'user5','user5@gmail.com','12345',1,'/file/user5.png','user');
+values(5,'user5','user5@gmail.com','12345',1,'/file/5.png','user');

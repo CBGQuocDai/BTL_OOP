@@ -3,15 +3,17 @@ package com.example.demo.DAO;
 import com.example.demo.Model.Post;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class PostDAO {
-    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
-    private String jdbcUsername = "avnadmin";
-    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
+    private String jdbcUsername = "root";
+    private String jdbcPassword = "12345";
     
-    private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp) VALUES(?,?,?,?,?,?,NOW())";
+    private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp,nameAuthor) VALUES(?,?,?,?,?,?,NOW(),?)";
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";
-
+    private static final String GET_ALL_POST="SELECT * FROM post";
+    private static final String COUNT_POST_OF_USER = "SELECT count(*) FROM post WHERE userId=?";
     public PostDAO(){}
     protected Connection getConnection() {
         Connection connection = null;
@@ -23,7 +25,6 @@ public class PostDAO {
         }
         return connection;
     }
-
     public void addPost(Post post){
         try {
             Connection connection = getConnection();
@@ -34,6 +35,7 @@ public class PostDAO {
             ps.setString(4,post.getTags());
             ps.setString(5,post.getType());
             ps.setString(6,post.getContent());
+            ps.setString(7,post.getNameAuthor());
             ps.execute();
             ps.close();
 
@@ -56,12 +58,48 @@ public class PostDAO {
                 post.setTitle(rs.getString("title"));
                 post.setTimeUp(Timestamp.valueOf(rs.getString("timeUp")));
                 post.setUserId(rs.getInt("userId"));
+                post.setNameAuthor(rs.getString("nameAuthor"));
             }
+            ps.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return post;
     }
-
+    public ArrayList<Post> selectAllPost() throws SQLException {
+        ArrayList<Post> a = new ArrayList<>();
+        Connection connection= getConnection();
+        PreparedStatement ps= connection.prepareStatement(GET_ALL_POST);
+        ResultSet rs=ps.executeQuery();
+        while(rs.next()){
+            Post post= new Post();
+            post.setPostId(rs.getInt("postId"));
+            post.setUserId(rs.getInt("userId"));
+            post.setNameAuthor(rs.getString("nameAuthor"));
+            post.setTitle(rs.getString("title"));
+            post.setTags(rs.getString("tags"));
+            post.setType(rs.getString("type"));
+            post.setContent(rs.getString("content"));
+            post.setTimeUp(rs.getTimestamp("timeUp"));
+            a.add(post);
+        }
+        ps.close();
+        return a;
+    }
+    public int countPost (int userId){
+        int ans=0;
+        try {
+            Connection connection=getConnection();
+            PreparedStatement ps= connection.prepareStatement(COUNT_POST_OF_USER);
+            ps.setString(1,String.valueOf(userId));
+            ResultSet rs=ps.executeQuery();
+            if (rs.next()){
+                ans =rs.getInt("count(*)");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ans;
+    }
 }
 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/listPost.css}">
+</head>
+<body>
+    <div class="header">
+    <ul>
+        <li><img style="width: 70px" th:src="@{../file/logo.png}" alt=""></li>
+        <li><a href=""><h2>Post</h2></a></li>
+        <li><a href=""><h2>Question</h2></a></li>
+    </ul>
+    <ul class="right">
+        <li>
+            <div class="find">
+                <input type="text" placeholder="Search in FoxGraphy">
+                <img th:src="@{../file/searchIcon.png}" alt="">
+            </div>
+        </li>
+        <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
+        <li><a href="/Post/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
+        <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
+    </ul>
+</div>
+    <div class="body">
+        <div class="nav">
+            <span>Latest</span>
+            <span>Follow</span>
+            <span>Bookmark</span>
+        </div>
+        <ul class="listPost">
+           <li th:each="post:${Posts}">
+               <a th:href="@{${post.getPostId()}}">
+                   <div class="introPost">
+                       <img th:src="@{'/file/'+${post.getUserId()}+'.png'}" alt="">
+                       <div class="author">
+                           <p th:text="${post.getNameAuthor()}+'     '+${post.getTimeUp()}"></p>
+                           <h3 th:text="${post.getTitle()}"></h3>
+                           <ul class="tag">
+                               <li th:each="tag:${post.getTags().split(',')}" th:text="${tag}">
+                               </li>
+                           </ul>
+                           <ul class="interaction">
+                               <li>
+                                   <img th:src="@{/file/up_and_down.png}" alt="">
+                                   <p th:text="${post.getCountVote()}"></p>
+                               </li>
+                               <li>
+                                   <img th:src="@{/file/bookmark.png}" alt="">
+                                   <p th:text="${post.getCountBookmark()}"></p>
+                               </li>
+                               <li>
+                                   <img th:src="@{/file/cmt.png}" alt="">
+                                   <p th:text ="${post.getCountComment()}">4</p>
+                               </li>
+                           </ul>
+                       </div>
+                   </div>
+               </a>
+           </li>
+        </ul>
+    </div>
+</body>
+</html>

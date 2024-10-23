@@ -89,10 +89,10 @@ body{
 }
 
 .body{
-
     margin-top: 25px;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
+
     .sidebar{
         display: flex;
         justify-content: end;
@@ -250,20 +250,25 @@ body{
             border-bottom: 1px solid #CACACB;
             width: 100%;
             font-size: 1.2em;
-            figure{
-                width:100%;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            img{
+                margin-left: 10%;
+                width: 80%;
+                height: auto;
                 display: flex;
                 justify-content: center;
-                margin:0;
-                img{
-                    width: 80%;
-                    height: auto;
-                }
             }
+
             pre{
                 background-color: #b5b5b5;
-
+                width:100%;
+                code {
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                }
             }
+
             blockquote{
                 margin:0;
             }
@@ -446,7 +451,6 @@ body{
         }
 
     }
-
 }
 .reportForm{
     background-color: rgba(235, 235, 235,0.8);

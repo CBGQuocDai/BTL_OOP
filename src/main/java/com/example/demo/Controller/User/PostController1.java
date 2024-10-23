@@ -8,12 +8,14 @@ import com.example.demo.Model.User;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 @Controller
@@ -28,6 +30,23 @@ public class PostController1 {
     private final FollowDAO followDAO = new FollowDAO();
     private Post post=new Post();
     private Post pre_post=new Post();
+
+    @GetMapping("/latest")
+    public String allPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
+        User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
+        ArrayList<Post> posts= postDAO.selectAllPost();
+        for(Post post:posts){
+            post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
+            post.setCountView(interactionDAO.countView(post.getPostId()));
+            post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
+            post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
+        }
+        Collections.reverse(posts);
+        modelMap.addAttribute("avatarUser",user.getAvatar());
+        modelMap.addAttribute("Posts",posts);
+        return "listPost";
+    }
+
     @GetMapping("/create")
     public String create(ModelMap modelMap, HttpSession httpSession) throws SQLException {
         post=pre_post;
@@ -49,6 +68,7 @@ public class PostController1 {
         if(!result.hasErrors()) {
             postSubmit.setPostId(++postId);
             postSubmit.setUserId((int)httpSession.getAttribute("userId"));
+            postSubmit.setNameAuthor((String)httpSession.getAttribute("username"));
             postDAO.addPost(postSubmit);
             post=new Post();
             pre_post = new Post();
@@ -59,10 +79,13 @@ public class PostController1 {
             return "redirect:/Post/create";
         }
     }
-
     @GetMapping("/{id}")
     public String postDetail(ModelMap modelMap, @PathVariable String id,HttpSession httpSession) throws SQLException {
         post = postDAO.selectPostById(Integer.parseInt(id));
+        post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
+        post.setCountView(interactionDAO.countView(post.getPostId()));
+        post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
+
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         int vote= interactionDAO.getNumVote(id);
         int stateVote = interactionDAO.getStateVote(Integer.parseInt(id),user.getUserId());
@@ -70,6 +93,8 @@ public class PostController1 {
 
         int stateFollow = followDAO.getStateFollow(user.getUserId(),post.getUserId());
         User author = userDAO.getUserByUserId(post.getUserId());
+        author.setCountPost(postDAO.countPost(author.getUserId()));
+        author.setCountFollow(followDAO.countFollow(author.getUserId()));
         ArrayList<Comment> cmt = commentDAO.getAllCommentByPostId(id);
 
         for(Comment c:cmt){
@@ -93,4 +118,5 @@ public class PostController1 {
         modelMap.addAttribute("tags",tags);
         return "postDetail";
     }
+
 }

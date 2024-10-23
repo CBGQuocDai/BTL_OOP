@@ -14,6 +14,16 @@ public class Post {
     @Id
     private int postId;
     private int userId;
+    private String nameAuthor;
+
+    public String getNameAuthor() {
+        return nameAuthor;
+    }
+
+    public void setNameAuthor(String nameAuthor) {
+        this.nameAuthor = nameAuthor;
+    }
+
     @NotEmpty(message = "Name is required")
     private String title;
     @NotEmpty(message = "Name is required")
@@ -23,6 +33,43 @@ public class Post {
     @NotEmpty(message = "Name is required")
     private String content;
     private Timestamp timeUp;
+
+    // Thôn tin bổ xung không có trong db
+    private int countVote,countBookmark, countView,countComment;
+
+
+    public int getCountVote() {
+        return countVote;
+    }
+
+    public void setCountVote(int countVote) {
+        this.countVote = countVote;
+    }
+
+    public int getCountBookmark() {
+        return countBookmark;
+    }
+
+    public void setCountBookmark(int countBookmark) {
+        this.countBookmark = countBookmark;
+    }
+
+    public int getCountView() {
+        return countView;
+    }
+
+    public void setCountView(int countView) {
+        this.countView = countView;
+    }
+
+    public int getCountComment() {
+        return countComment;
+    }
+
+    public void setCountComment(int countComment) {
+        this.countComment = countComment;
+    }
+
     public Post(){
         this.type="post";
         this.postId=++cnt;

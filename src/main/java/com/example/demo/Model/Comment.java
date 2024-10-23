@@ -17,12 +17,21 @@ public class Comment {
 
     private int stateVote;
     private String username;
+    private int userId;
     @NotEmpty
     private String content;
     private Timestamp timeUp;
 
     public Comment(){
         this.parentComment=0;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getStateVote() {
