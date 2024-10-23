@@ -13,6 +13,25 @@ public class User {
     private String username, password,email;
     private String avatar,role;
 
+    //thông tin bổ xung
+    private int countFollow, countPost;
+
+    public int getCountFollow() {
+        return countFollow;
+    }
+
+    public void setCountFollow(int countFollow) {
+        this.countFollow = countFollow;
+    }
+
+    public int getCountPost() {
+        return countPost;
+    }
+
+    public void setCountPost(int countPost) {
+        this.countPost = countPost;
+    }
+
     public String getRole() {
         return role;
     }

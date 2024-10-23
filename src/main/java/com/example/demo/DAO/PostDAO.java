@@ -4,6 +4,7 @@ import com.example.demo.Model.Post;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class PostDAO {
     private String jdbcUsername = "avnadmin";
     private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
     
-    private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp) VALUES(?,?,?,?,?,?,NOW())";
+    private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp,nameAuthor) VALUES(?,?,?,?,?,?,NOW(),?)";
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";
     private static final String GET_ALL_POST= "SELECT * FROM post";
     private final String DELETE_POST = "DELETE FROM post WHERE postId = ?";
@@ -28,6 +29,7 @@ public class PostDAO {
         ps.executeUpdate();
     }
 
+    private static final String COUNT_POST_OF_USER = "SELECT count(*) FROM post WHERE userId=?";
     public PostDAO(){}
     protected Connection getConnection() {
         Connection connection = null;
@@ -75,6 +77,7 @@ public class PostDAO {
             ps.setString(4,post.getTags());
             ps.setString(5,post.getType());
             ps.setString(6,post.getContent());
+            ps.setString(7,post.getNameAuthor());
             ps.execute();
             ps.close();
 
@@ -97,12 +100,28 @@ public class PostDAO {
                 post.setTitle(rs.getString("title"));
                 post.setTimeUp(Timestamp.valueOf(rs.getString("timeUp")));
                 post.setUserId(rs.getInt("userId"));
+                post.setNameAuthor(rs.getString("nameAuthor"));
             }
+            ps.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return post;
     }
-
+    public int countPost (int userId){
+        int ans=0;
+        try {
+            Connection connection=getConnection();
+            PreparedStatement ps= connection.prepareStatement(COUNT_POST_OF_USER);
+            ps.setString(1,String.valueOf(userId));
+            ResultSet rs=ps.executeQuery();
+            if (rs.next()){
+                ans =rs.getInt("count(*)");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ans;
+    }
 }
 

@@ -1,13 +1,11 @@
 package com.example.demo.DAO;
 
 import com.example.demo.Model.Comment;
-import org.springframework.stereotype.Component;
 
 import java.awt.geom.RectangularShape;
 import java.sql.*;
 import java.util.ArrayList;
 
-@Component
 public class CommentDAO {
     private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
     private String jdbcUsername = "avnadmin";
@@ -18,7 +16,8 @@ public class CommentDAO {
     private final String GET_ALL_COMMENT="SELECT * FROM comment";
     private final String DELETE_COMMENT="DELETE FROM comment WHERE commentId = ?";
 
-
+    private final String COUNT_COMMENT_OF_POST ="SELECT COUNT(*) FROM comment where postId= ?";
+    public CommentDAO(){}
     protected Connection getConnection() {
         Connection connection = null;
         try {
@@ -56,7 +55,24 @@ public class CommentDAO {
         return cmts;
     }
 
-    public CommentDAO(){}
+
+    public int countNumberComment(int postId){
+        try {
+            Connection connection=getConnection();
+            PreparedStatement ps= connection.prepareStatement(COUNT_COMMENT_OF_POST);
+            ps.setString(1,String.valueOf(postId));
+            ResultSet rs= ps.executeQuery();
+            if(rs.next())
+            {
+                return rs.getInt("count(*)");
+
+            }
+            else return 0;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public void addComment(Comment cmt) throws SQLException {
 
         Connection connection = getConnection();

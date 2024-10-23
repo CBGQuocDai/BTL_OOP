@@ -28,12 +28,12 @@ public class LoginController {
         boolean missingPassword =result.hasFieldErrors("password");
         if(!missingPassword && !missingUsername){
             User user= userDAO.getUserByUsername(userC.getUsername());
-            if(user.getUsername()== null) return "redirect:/admin";
+            if(user.getUsername()== null) return "redirect:/login";
             if( user.getPassword().equals(userC.getPassword())){
                 if(user.getRole().equals("user")){
                     httpSession.setAttribute("username",user.getUsername());
                     httpSession.setAttribute("userId",user.getUserId());
-                    return "redirect:/Post/1";
+                    return "redirect:/Post/latest";
                 }
                 else return "redirect:/admin";
             }

@@ -9,12 +9,14 @@ public class InteractionDAO {
     private String jdbcUsername = "avnadmin";
     private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
 
+
     private static final String COUNT_VOTE_UP="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='up'";
     private static final String COUNT_VOTE_DOWN ="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='down'";
     private static final String GET_INTERACTION="SELECT * FROM interaction WHERE postId=? AND userId= ? AND (type =? OR type =?)";
     private static final String DELETE_INTERACTION ="DELETE FROM interaction WHERE interactionId= ?";
     private static final String UPDATE_VOTE = "UPDATE interaction SET time = NOW() ,type =? WHERE interactionId=?";
     private static final String ADD_INTERACTION = "INSERT INTO interaction (interactionId,userId,commentId,postId,type,time) VALUES (?,?,-1,?,?,NOW())";
+    private static final String COUNT_BOOKMARK ="SELECT count(*) FROM interaction WHERE postId=? AND type='bookmark'";
 
     public InteractionDAO(){}
     protected Connection getConnection() {
@@ -126,6 +128,38 @@ public class InteractionDAO {
         Interaction bookmark = getInteraction(postId,userId,"bookmark","bookmark");
         if(bookmark.getType() == null) return 0;
         else return 1;
+    }
+    public int countBookmark(int postId){
+        int ans=0;
+        try{
+            Connection connection =getConnection();
+            PreparedStatement ps= connection.prepareStatement(COUNT_BOOKMARK);
+            ps.setString(1,String.valueOf(postId));
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()){
+                ans = rs.getInt("count(*)");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ans;
+    }
+    // đém số lượt xem bài viết
+    private static final String COUNT_VIEW = "SELECT COUNT(*) FROM interaction WHERE postId=? AND type ='view'";
+    public int countView(int postId){
+        int ans=0;
+        try {
+            Connection connection= getConnection();
+            PreparedStatement ps =connection.prepareStatement(COUNT_VIEW);
+            ps.setString(1,String.valueOf(postId));
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()) {
+                ans = rs.getInt("count(*)");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ans;
     }
 
     // tương tác với comment

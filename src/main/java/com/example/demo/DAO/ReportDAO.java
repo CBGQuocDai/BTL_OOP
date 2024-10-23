@@ -12,6 +12,7 @@ public class ReportDAO {
     private String jdbcUsername = "avnadmin";
     private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
 
+
     public ReportDAO(){}
     protected Connection getConnection() {
         Connection connection = null;

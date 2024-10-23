@@ -16,6 +16,7 @@ public class UserDAO {
     private String jdbcUsername = "avnadmin";
     private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
 
+
     private final String GET_USER_BY_USERNAME="SELECT * FROM user WHERE username =? ";
     private final String GET_USER_BY_USERID="SELECT * FROM user WHERE userId =? ";
     private final String GET_ALL_USER = "SELECT * FROM user";
