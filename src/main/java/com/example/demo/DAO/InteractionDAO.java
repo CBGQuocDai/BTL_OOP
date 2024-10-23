@@ -5,9 +5,10 @@ import com.example.demo.Model.Interaction;
 import java.sql.*;
 
 public class InteractionDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
+    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
+    private String jdbcUsername = "avnadmin";
+    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+
 
     private static final String COUNT_VOTE_UP="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='up'";
     private static final String COUNT_VOTE_DOWN ="SELECT count(DISTINCT interactionId) FROM interaction WHERE postId= ? AND type ='down'";

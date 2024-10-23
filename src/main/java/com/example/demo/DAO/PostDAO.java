@@ -6,9 +6,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class PostDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
+    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
+    private String jdbcUsername = "avnadmin";
+    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+
     
     private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp,nameAuthor) VALUES(?,?,?,?,?,?,NOW(),?)";
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";

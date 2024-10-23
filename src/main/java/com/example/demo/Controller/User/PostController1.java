@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 @Controller
@@ -34,7 +35,7 @@ public class PostController1 {
     @GetMapping("/latest")
     public String allPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-        ArrayList<Post> posts= postDAO.selectAllPost();
+        List<Post> posts= postDAO.selectAllPost();
         for(Post post:posts){
             post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
             post.setCountView(interactionDAO.countView(post.getPostId()));

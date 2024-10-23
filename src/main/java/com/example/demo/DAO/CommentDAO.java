@@ -7,9 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class CommentDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
+    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
+    private String jdbcUsername = "avnadmin";
+    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+
 
     private final String ADD_COMMENT= "INSERT INTO comment(commentId,parentComment,postId,userId,username,content,timeUP) VALUES(?,?,?,?,?,?,NOW())";
     private final String GET_ALL_COMMENT_BY_POSTID="SELECT * FROM comment WHERE postId= ?";
