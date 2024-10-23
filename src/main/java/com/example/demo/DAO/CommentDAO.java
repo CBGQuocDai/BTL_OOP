@@ -1,11 +1,13 @@
 package com.example.demo.DAO;
 
 import com.example.demo.Model.Comment;
+import org.springframework.stereotype.Component;
 
 import java.awt.geom.RectangularShape;
 import java.sql.*;
 import java.util.ArrayList;
 
+@Component
 public class CommentDAO {
     private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
     private String jdbcUsername = "avnadmin";

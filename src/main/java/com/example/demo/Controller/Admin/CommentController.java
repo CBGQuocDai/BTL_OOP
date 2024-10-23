@@ -14,7 +14,7 @@ import java.sql.SQLException;
 public class CommentController {
 
     @Autowired
-    CommentDAO commentDAO;
+    private CommentDAO commentDAO;
 
     @RequestMapping("/admin_comment")
     public String Post(Model model) throws SQLException {
