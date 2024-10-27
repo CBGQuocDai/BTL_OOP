@@ -1,17 +1,18 @@
 package com.example.demo.Controller.User;
 
-import com.example.demo.DAO.UserDAO;
-import com.example.demo.Model.User;
-import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.sql.SQLException;
+import com.example.demo.DAO.UserDAO;
+import com.example.demo.Model.User;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class LoginController {
