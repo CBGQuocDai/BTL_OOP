@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <link rel="stylesheet" th:href="@{/css/create.css}">
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css">
+        <script src="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.umd.js"></script>
+        <style>
+            .error{
+                margin-top:5px;
+                margin-inside: 0;
+                margin-bottom:5px;
+                padding: 0;
+                color:red;
+                font-size: 1.3em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <ul>
+                <li><img style="width: 70px" th:src="@{../file/logo.png}" alt=""></li>
+                <li><a href=""><h2>Post</h2></a></li>
+                <li><a href=""><h2>Question</h2></a></li>
+            </ul>
+            <ul class="right">
+                <li>
+                    <div class="find">
+                        <input type="text" placeholder="Search in FoxGraphy">
+                        <img th:src="@{../file/searchIcon.png}" alt="">
+                    </div>
+                </li>
+                <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
+                <li><a href="/hhh"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
+                <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
+            </ul>
+        </div>
+        <div class="inner-main">
+            <div class="row">
+                <div class="col-3">
+                    <div class="inner-sidebar">
+                        <ul>
+                            <li class="mt-1"></li>
+                            <li class="active">
+                                <a class="" href="">
+                                    <i class="fa-regular fa-user"></i>
+                                    <span>userInfo</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-solid fa-lock"></i>
+                                    <span>Change password</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-solid fa-address-card"></i>
+                                    <span>Post</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-regular fa-circle-question"></i>
+                                    <span>Question</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <!-- profile_user  -->
+                    <div class="avatar-container">
+                        <div class="inner-avatar">
+                            <img src="/avatar.png" alt="Avatar" class="avatar">
+                        </div>
+                        <button change-avatar class="avatar-button">Change avatar</button>
+                    </div>
+                    <form class="profile-form" action="/profile" method="POST">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" value="user.username">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" value="user.email">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="phone">Phone</label>
+                                <input type="text" name="phone" id="phone" value="user.phone">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="gender">Gender</label>
+                                <input type="text" name="gender" id="gender" value="user.gender">
+                            </div>
+                        </div>
+                    </form>
+                    <!--End profile_user  -->
+
+                </div>
+            </div>
+        </div>
+
+        <form action="" class="d-none inner-upload">
+            <div class="inner-btn">
+                <input type="file" name="" id="">
+                <button type="submit">Upload</button>
+            </div>
+        </form>
+
+        <!-- bs4 -->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+        <script>
+            const changeAvatar = document.querySelector('[change-avatar]');
+            const formUpload = document.querySelector('.inner-upload');
+
+            changeAvatar.addEventListener('click', (event) => {
+            event.stopPropagation();
+            formUpload.classList.remove('d-none');
+            formUpload.classList.add('d-block');
+            });
+
+            document.addEventListener('click', (event) => {
+            if (!formUpload.contains(event.target) && !changeAvatar.contains(event.target)) {
+            formUpload.classList.remove('d-block');
+            formUpload.classList.add('d-none');
+            }
+            });
+
+            formUpload.addEventListener('click', (event) => {
+            event.stopPropagation();
+            });
+        </script>
+        <script>
+            const {
+            ClassicEditor,
+            AccessibilityHelp,
+            Alignment,
+            Autoformat,
+            AutoImage,
+            AutoLink,
+            Autosave,
+            Base64UploadAdapter,
+            BlockQuote,
+            Bold,
+            Code,
+            CodeBlock,
+            Essentials,
+            FindAndReplace,
+            FontBackgroundColor,
+            FontColor,
+            FontFamily,
+            FontSize,
+            Heading,
+            Highlight,
+            ImageBlock,
+            ImageCaption,
+            ImageInline,
+            ImageInsert,
+            ImageInsertViaUrl,
+            ImageResize,
+            ImageStyle,
+            ImageTextAlternative,
+            ImageToolbar,
+            ImageUpload,
+            Indent,
+            IndentBlock,
+            Italic,
+            Link,
+            LinkImage,
+            List,
+            ListProperties,
+            MediaEmbed,
+            Paragraph,
+            PasteFromOffice,
+            RemoveFormat,
+            SelectAll,
+            SpecialCharacters,
+            SpecialCharactersArrows,
+            SpecialCharactersCurrency,
+            SpecialCharactersEssentials,
+            SpecialCharactersLatin,
+            SpecialCharactersMathematical,
+            SpecialCharactersText,
+            Strikethrough,
+            Subscript,
+            Superscript,
+            Table,
+            TableCaption,
+            TableCellProperties,
+            TableColumnResize,
+            TableProperties,
+            TableToolbar,
+            TextTransformation,
+            TodoList,
+            Underline,
+            Undo
+            } = CKEDITOR;
+
+            ClassicEditor
+            .create( document.querySelector( '#editor' ), {
+            toolbar: {
+            items: [
+            'undo',
+            'redo',
+            '|',
+            'findAndReplace',
+            '|',
+            'heading',
+            '|',
+            'fontSize',
+            'fontFamily',
+            'fontColor',
+            'fontBackgroundColor',
+            '|',
+            'bold',
+            'italic',
+            'underline',
+            'strikethrough',
+            'subscript',
+            'superscript',
+            'code',
+            'removeFormat',
+            '|',
+            'specialCharacters',
+            'link',
+            'insertImage',
+            'mediaEmbed',
+            'insertTable',
+            'highlight',
+            'blockQuote',
+            'codeBlock',
+            '|',
+            'alignment',
+            '|',
+            'bulletedList',
+            'numberedList',
+            'todoList',
+            'outdent',
+            'indent'
+            ],
+            shouldNotGroupWhenFull: false
+            },
+            plugins: [
+            AccessibilityHelp,
+            Alignment,
+            Autoformat,
+            AutoImage,
+            AutoLink,
+            Autosave,
+            Base64UploadAdapter,
+            BlockQuote,
+            Bold,
+            Code,
+            CodeBlock,
+            Essentials,
+            FindAndReplace,
+            FontBackgroundColor,
+            FontColor,
+            FontFamily,
+            FontSize,
+            Heading,
+            Highlight,
+            ImageBlock,
+            ImageCaption,
+            ImageInline,
+            ImageInsert,
+            ImageInsertViaUrl,
+            ImageResize,
+            ImageStyle,
+            ImageTextAlternative,
+            ImageToolbar,
+            ImageUpload,
+            Indent,
+            IndentBlock,
+            Italic,
+            Link,
+            LinkImage,
+            List,
+            ListProperties,
+            MediaEmbed,
+            Paragraph,
+            PasteFromOffice,
+            RemoveFormat,
+            SelectAll,
+            SpecialCharacters,
+            SpecialCharactersArrows,
+            SpecialCharactersCurrency,
+            SpecialCharactersEssentials,
+            SpecialCharactersLatin,
+            SpecialCharactersMathematical,
+            SpecialCharactersText,
+            Strikethrough,
+            Subscript,
+            Superscript,
+            Table,
+            TableCaption,
+            TableCellProperties,
+            TableColumnResize,
+            TableProperties,
+            TableToolbar,
+            TextTransformation,
+            TodoList,
+            Underline,
+            Undo
+            ],
+            fontFamily: {
+            supportAllValues: true
+            },
+            fontSize: {
+            options: [10, 12, 14, 'default', 18, 20, 22],
+            supportAllValues: true
+            },
+            heading: {
+            options: [
+            {
+            model: 'paragraph',
+            title: 'Paragraph',
+            class: 'ck-heading_paragraph'
+            },
+            {
+            model: 'heading1',
+            view: 'h1',
+            title: 'Heading 1',
+            class: 'ck-heading_heading1'
+            },
+            {
+            model: 'heading2',
+            view: 'h2',
+            title: 'Heading 2',
+            class: 'ck-heading_heading2'
+            },
+            {
+            model: 'heading3',
+            view: 'h3',
+            title: 'Heading 3',
+            class: 'ck-heading_heading3'
+            },
+            {
+            model: 'heading4',
+            view: 'h4',
+            title: 'Heading 4',
+            class: 'ck-heading_heading4'
+            },
+            {
+            model: 'heading5',
+            view: 'h5',
+            title: 'Heading 5',
+            class: 'ck-heading_heading5'
+            },
+            {
+            model: 'heading6',
+            view: 'h6',
+            title: 'Heading 6',
+            class: 'ck-heading_heading6'
+            }
+            ]
+            },
+            image: {
+            toolbar: [
+            'toggleImageCaption',
+            'imageTextAlternative',
+            '|',
+            'imageStyle:inline',
+            'imageStyle:wrapText',
+            'imageStyle:breakText',
+            '|',
+            'resizeImage'
+            ]
+            },
+
+            link: {
+            addTargetToExternalLinks: true,
+            defaultProtocol: 'https://',
+            decorators: {
+            toggleDownloadable: {
+            mode: 'manual',
+            label: 'Downloadable',
+            attributes: {
+            download: 'file'
+            }
+            }
+            }
+            },
+            list: {
+            properties: {
+            styles: true,
+            startIndex: true,
+            reversed: true
+            }
+            },
+            placeholder: 'Type or paste your content here!',
+            table: {
+            contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
+            }
+            } )
+            .then( /* ... */ )
+            .catch( /* ... */ );
+        </script>
+    </body>
+</html>
