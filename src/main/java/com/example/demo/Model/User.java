@@ -4,14 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
-
 public class User {
-    static int cnt=0;
+
+    static int cnt = 0;
     @Id
-    private int userId,gender;
+    private int userId, gender;
     @NotEmpty
-    private String username, password,email;
-    private String avatar,role;
+    private String username, password, email;
+    private String avatar, role, phone;
 
     //thông tin bổ xung
     private int countFollow, countPost;
@@ -40,11 +40,20 @@ public class User {
         this.role = role;
     }
 
-    public User(){
-        this.userId =++cnt;
+    public User() {
+        this.userId = ++cnt;
     }
+
     public int getUserId() {
         return userId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void setUserId(int userId) {
@@ -59,7 +68,8 @@ public class User {
         this.gender = gender;
     }
 
-    public @NotEmpty String getUsername() {
+    public @NotEmpty
+    String getUsername() {
         return username;
     }
 
@@ -67,7 +77,8 @@ public class User {
         this.username = username;
     }
 
-    public @NotEmpty String getPassword() {
+    public @NotEmpty
+    String getPassword() {
         return password;
     }
 
@@ -75,7 +86,8 @@ public class User {
         this.password = password;
     }
 
-    public @NotEmpty String getEmail() {
+    public @NotEmpty
+    String getEmail() {
         return email;
     }
 
