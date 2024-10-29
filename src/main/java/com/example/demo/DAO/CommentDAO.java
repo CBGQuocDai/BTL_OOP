@@ -3,17 +3,16 @@ package com.example.demo.DAO;
 import com.example.demo.Model.Comment;
 import org.springframework.stereotype.Component;
 
-import java.awt.geom.RectangularShape;
 import java.sql.*;
 import java.util.ArrayList;
 
 @Component
 public class CommentDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
+    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
+    private String jdbcUsername = "avnadmin";
+    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
 
-    private final String ADD_COMMENT= "INSERT INTO comment(commentId,parentComment,postId,username,content,timeUP,userId) VALUES(?,?,?,?,?,NOW(),?)";
+    private final String ADD_COMMENT= "INSERT INTO comment(parentComment,postId,username,content,time,userId) VALUES(?,?,?,?,NOW(),?)";
     private final String GET_ALL_COMMENT_BY_POSTID="SELECT * FROM comment WHERE postId= ?";
     private final String GET_ALL_COMMENT="SELECT * FROM comment";
     private final String DELETE_COMMENT="DELETE FROM comment WHERE commentId = ?";
@@ -52,12 +51,11 @@ public class CommentDAO {
             cmt.setUsername(rs.getString("username"));
 
             cmt.setContent(rs.getString("content"));
-            cmt.setTimeUp(rs.getTimestamp("timeUp"));
+            cmt.setTime(rs.getTimestamp("timeUp"));
             cmts.add(cmt);
         }
         return cmts;
     }
-
 
     public int countNumberComment(int postId){
         try {
@@ -80,14 +78,13 @@ public class CommentDAO {
 
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(ADD_COMMENT);
-        ps.setString(1,String.valueOf(cmt.getCommentId()));
-        ps.setString(2,String.valueOf(cmt.getParentComment()));
-        ps.setString(3,String.valueOf(cmt.getPostId()));
-        ps.setString(4,cmt.getUsername());
-        ps.setString(5,cmt.getContent());
-        ps.setString(6,String.valueOf(cmt.getUserId()));
+        ps.setString(1,String.valueOf(cmt.getParentComment()));
+        ps.setString(2,String.valueOf(cmt.getPostId()));
+        ps.setString(3,cmt.getUsername());
+        ps.setString(4,cmt.getContent());
+        ps.setString(5,String.valueOf(cmt.getUserId()));
         ps.execute();
-
+        ps.close();
     }
     public ArrayList<Comment> getAllCommentByPostId(String postId) throws SQLException {
         Connection connection =getConnection();
@@ -104,7 +101,7 @@ public class CommentDAO {
             cmt.setUsername(rs.getString("username"));
             cmt.setContent(rs.getString("content"));
             cmt.setUserId(rs.getInt("userId"));
-            cmt.setTimeUp(rs.getTimestamp("timeUp"));
+            cmt.setTime(rs.getTimestamp("time"));
             cmts.add(cmt);
         }
         return cmts;

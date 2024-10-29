@@ -4,6 +4,10 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Comment {
     static int cnt =0;
@@ -13,14 +17,12 @@ public class Comment {
     private int postId;
     private int countVote;
 
-
-
     private int stateVote;
     private String username;
     private int userId;
     @NotEmpty
     private String content;
-    private Timestamp timeUp;
+    private Timestamp time;
 
     public Comment(){
         this.parentComment=0;
@@ -90,16 +92,20 @@ public class Comment {
         this.content = content;
     }
 
-    public String getTimeUp() {
-        String ans=timeUp.toString();
-        ans=ans.substring(0,ans.length()-5);
-        int hour= Integer.parseInt(ans.substring(11,13));
-        if(hour <= 12) ans=ans+" AM";
-        else ans=ans+" PM";
-        return ans;
+    public String getTime() {
+        DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(this.time.toString().substring(0,19), originalFormatter);
+
+        // Convert to UTC+7 (Asia/Bangkok)
+        ZonedDateTime utcDateTime = localDateTime.atZone(ZoneId.of("UTC"));
+        ZonedDateTime utcPlus7DateTime = utcDateTime.withZoneSameInstant(ZoneId.of("Asia/Bangkok"));
+
+        // Format the new timestamp
+        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy, hh:mm a");
+        return utcPlus7DateTime.format(newFormatter);
     }
 
-    public void setTimeUp(Timestamp timeUp) {
-        this.timeUp = timeUp;
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 }

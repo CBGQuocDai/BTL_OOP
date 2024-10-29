@@ -15,7 +15,7 @@ public class InteractionDAO {
     private static final String GET_INTERACTION="SELECT * FROM interaction WHERE postId=? AND userId= ? AND (type =? OR type =?)";
     private static final String DELETE_INTERACTION ="DELETE FROM interaction WHERE interactionId= ?";
     private static final String UPDATE_VOTE = "UPDATE interaction SET time = NOW() ,type =? WHERE interactionId=?";
-    private static final String ADD_INTERACTION = "INSERT INTO interaction (interactionId,userId,commentId,postId,type,time) VALUES (?,?,-1,?,?,NOW())";
+    private static final String ADD_INTERACTION = "INSERT INTO interaction (userId,commentId,postId,type,time) VALUES (?,-1,?,?,NOW())";
     private static final String COUNT_BOOKMARK ="SELECT count(*) FROM interaction WHERE postId=? AND type='bookmark'";
 
     public InteractionDAO(){}
@@ -85,10 +85,10 @@ public class InteractionDAO {
             Connection connection =getConnection();
             if(bookmark.getType()== null){
                 PreparedStatement addBookmark= connection.prepareStatement(ADD_INTERACTION);
-                addBookmark.setString(1, String.valueOf(bookmark.getInteractionId()));
-                addBookmark.setString(2,String.valueOf(userId));
-                addBookmark.setString(3,String.valueOf(postId));
-                addBookmark.setString(4,type);
+
+                addBookmark.setString(1,String.valueOf(userId));
+                addBookmark.setString(2,String.valueOf(postId));
+                addBookmark.setString(3,type);
                 addBookmark.execute();
             }
             else{
@@ -102,10 +102,10 @@ public class InteractionDAO {
             Connection connection =getConnection();
             if(vote.getType()== null){
                 PreparedStatement addVote = connection.prepareStatement(ADD_INTERACTION);
-                addVote.setString(1, String.valueOf(vote.getInteractionId()));
-                addVote.setString(2,String.valueOf(userId));
-                addVote.setString(3,String.valueOf(postId));
-                addVote.setString(4,type);
+
+                addVote.setString(1,String.valueOf(userId));
+                addVote.setString(2,String.valueOf(postId));
+                addVote.setString(3,type);
                 addVote.execute();
             }
             else {
@@ -145,7 +145,7 @@ public class InteractionDAO {
         return ans;
     }
     // đém số lượt xem bài viết
-    private static final String COUNT_VIEW = "SELECT COUNT(*) FROM interaction WHERE postId=? AND type ='view'";
+    private static final String COUNT_VIEW = "SELECT COUNT(DISTINCT interactionId) FROM interaction WHERE postId=? AND type ='view'";
     public int countView(int postId){
         int ans=0;
         try {
@@ -154,7 +154,7 @@ public class InteractionDAO {
             ps.setString(1,String.valueOf(postId));
             ResultSet rs=ps.executeQuery();
             if(rs.next()) {
-                ans = rs.getInt("count(*)");
+                ans = rs.getInt("COUNT(DISTINCT interactionId)");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -168,7 +168,7 @@ public class InteractionDAO {
     private static final String GET_INTERACTION_COMMENT="SELECT * FROM interaction WHERE commentId=? AND userId= ? AND (type ='down' OR type ='up')";
     private static final String DELETE_INTERACTION_COMMENT ="DELETE FROM interaction WHERE interactionId= ?";
     private static final String UPDATE_VOTE_COMMENT = "UPDATE interaction SET time = NOW() ,type =? WHERE interactionId=?";
-    private static final String ADD_INTERACTION_COMMENT = "INSERT INTO interaction (interactionId,userId,postId,commentId,type,time) VALUES (?,?,-1,?,?,NOW())";
+    private static final String ADD_INTERACTION_COMMENT = "INSERT INTO interaction (userId,postId,commentId,type,time) VALUES (?,-1,?,?,NOW())";
 
     public int getNumVoteComment(int id) throws SQLException {
         Connection connection = getConnection();
@@ -219,10 +219,9 @@ public class InteractionDAO {
             Connection connection =getConnection();
             if(vote.getType()== null){
                 PreparedStatement addVote = connection.prepareStatement(ADD_INTERACTION_COMMENT);
-                addVote.setString(1, String.valueOf(vote.getInteractionId()));
-                addVote.setString(2,String.valueOf(userId));
-                addVote.setString(3,String.valueOf(commentId));
-                addVote.setString(4,type);
+                addVote.setString(1,String.valueOf(userId));
+                addVote.setString(2,String.valueOf(commentId));
+                addVote.setString(3,type);
                 addVote.execute();
             }
             else {
@@ -239,5 +238,26 @@ public class InteractionDAO {
                 }
             }
     }
-
+    private static final String GET_VIEW = "SELECT * FROM interaction WHERE postId=? AND userId=? AND type = 'view'";
+    public void addInteractionView(Interaction x) {
+        try{
+            Connection connection = getConnection();
+            PreparedStatement ps= connection.prepareStatement(GET_VIEW);
+            ps.setString(1,String.valueOf(x.getPostId()));
+            ps.setString(2,String.valueOf(x.getUserId()));
+            ResultSet rs=ps.executeQuery();
+            if(!rs.next()){
+                PreparedStatement ps2= connection.prepareStatement(ADD_INTERACTION);
+                Interaction y = new Interaction();
+                ps2.setString(1,String.valueOf(x.getUserId()));
+                ps2.setString(2,String.valueOf(x.getPostId()));
+                ps2.setString(3,x.getType());
+                ps2.execute();
+                ps2.close();
+            }
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

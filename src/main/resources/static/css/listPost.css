@@ -97,13 +97,16 @@ body{
     .nav{
         display: flex;
         flex-direction: row;
-        gap:10px;
+        gap:15px;
         padding: 10px;
         border-bottom: 1px black solid;
-
         span{
             display: flex;
-            padding: 3px 5px;
+            padding: 5px 8px;
+            a{
+                text-decoration: none;
+                color: black;
+            }
         }
     }
     .listPost{
@@ -146,7 +149,7 @@ body{
                             flex-direction: row;
                             gap:10px;
                             li{
-                                background-color: #b5b5b5;
+                                background-color: #e8e8e8;
                                 padding: 3px 5px;
                                 border-bottom: none;
                             }

@@ -34,7 +34,7 @@ public class LoginController {
                 if(user.getRole().equals("user")){
                     httpSession.setAttribute("username",user.getUsername());
                     httpSession.setAttribute("userId",user.getUserId());
-                    return "redirect:/Post/latest";
+                    return "redirect:/post/latest";
                 }
                 else return "redirect:/admin";
             }
