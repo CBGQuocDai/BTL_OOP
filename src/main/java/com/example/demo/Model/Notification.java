@@ -1,30 +1,32 @@
 package com.example.demo.Model;
 
-import jakarta.validation.constraints.NotEmpty;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Report {
-    private int reportId;
-    private int postId,commentId;
-    @NotEmpty
-    private String content,reason;
+public class Notification {
+    private int id;
+    private String message;
+    private int postId;
+    private int userId;
     private Timestamp time;
-    public Report(){
-        this.postId=-1;
-        this.commentId=-1;
+    public Notification(){};
+    public int getId() {
+        return id;
     }
 
-    public int getReportId() {
-        return reportId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setReportId(int reportId) {
-        this.reportId = reportId;
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public int getPostId() {
@@ -35,28 +37,12 @@ public class Report {
         this.postId = postId;
     }
 
-    public int getCommentId() {
-        return commentId;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
-    }
-
-    public @NotEmpty String getContent() {
-        return content;
-    }
-
-    public void setContent(@NotEmpty String content) {
-        this.content = content;
-    }
-
-    public @NotEmpty String getReason() {
-        return reason;
-    }
-
-    public void setReason(@NotEmpty String reason) {
-        this.reason = reason;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getTime() {
@@ -72,7 +58,7 @@ public class Report {
         return utcPlus7DateTime.format(newFormatter);
     }
 
-    public void setTime(@NotEmpty Timestamp time) {
+    public void setTime(Timestamp time) {
         this.time = time;
     }
 }

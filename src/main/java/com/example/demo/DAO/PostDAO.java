@@ -15,9 +15,9 @@ public class PostDAO {
     private String jdbcUsername = "avnadmin";
     private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
     
-    private static final String ADD_A_POST = "INSERT INTO post(postId,userId,title,tags,type,content,timeUp,nameAuthor) VALUES(?,?,?,?,?,?,NOW(),?)";
+    private static final String ADD_A_POST = "INSERT INTO post(userId,title,tags,type,content,time,nameAuthor) VALUES(?,?,?,?,?,NOW(),?)";
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";
-    private static final String GET_ALL_POST= "SELECT * FROM post";
+    private static final String GET_ALL_POST= "SELECT * FROM post ORDER BY post.postId DESC";
     private final String DELETE_POST = "DELETE FROM post WHERE postId = ?";
 
     public void deletePostById (String id) throws SQLException {
@@ -30,6 +30,10 @@ public class PostDAO {
     }
 
     private static final String COUNT_POST_OF_USER = "SELECT count(*) FROM post WHERE userId=?";
+    private static final String GET_ALL_POST_FOLLOW ="SELECT * FROM post JOIN follow ON post.userId = follow.userIdDst AND follow.userIdSrc=? ORDER BY post.postId DESC";
+    private static final String GET_ALL_POST_BOOKMARK ="SELECT * FROM post JOIN interaction ON post.postId = interaction.postId AND interaction.userId=? AND interaction.type='bookmark' ORDER BY post.postId DESC";
+    private static final String SEARCH = "SELECT * FROM post WHERE title LIKE ? AND tags LIKE ? ORDER By postId DESC";
+
     public PostDAO(){}
     protected Connection getConnection() {
         Connection connection = null;
@@ -49,7 +53,6 @@ public class PostDAO {
             PreparedStatement ps = connection.prepareStatement(GET_ALL_POST);
 
             ResultSet rs = ps.executeQuery();
-
             while(rs.next()){
                 Post post = new Post();
                 post.setPostId(rs.getInt("postId"));
@@ -57,8 +60,9 @@ public class PostDAO {
                 post.setTags(rs.getString("tags"));
                 post.setContent(rs.getString("content"));
                 post.setTitle(rs.getString("title"));
-                post.setTimeUp(Timestamp.valueOf(rs.getString("timeUp")));
+                post.setTime(Timestamp.valueOf(rs.getString("time")));
                 post.setUserId(rs.getInt("userId"));
+                post.setNameAuthor(rs.getString("nameAuthor"));
                 posts.add(post);
             }
         } catch (Exception e) {
@@ -71,13 +75,14 @@ public class PostDAO {
         try {
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(ADD_A_POST);
-            ps.setString(1,String.valueOf(post.getPostId()));
-            ps.setString(2,String.valueOf(post.getUserId()));
-            ps.setString(3,post.getTitle());
-            ps.setString(4,post.getTags());
-            ps.setString(5,post.getType());
-            ps.setString(6,post.getContent());
-            ps.setString(7,post.getNameAuthor());
+
+            ps.setString(1,String.valueOf(post.getUserId()));
+            ps.setString(2,post.getTitle());
+            ps.setString(3,post.getTags());
+            ps.setString(4,post.getType());
+            ps.setString(5,post.getContent());
+            ps.setString(6,post.getNameAuthor());
+
             ps.execute();
             ps.close();
 
@@ -85,7 +90,7 @@ public class PostDAO {
             throw new RuntimeException(e);
         }
     }
-    public Post selectPostById(int id){
+    public Post getPostById(int id){
         Post post= new Post();
         try {
             Connection connection = getConnection();
@@ -98,7 +103,7 @@ public class PostDAO {
                 post.setTags(rs.getString("tags"));
                 post.setContent(rs.getString("content"));
                 post.setTitle(rs.getString("title"));
-                post.setTimeUp(Timestamp.valueOf(rs.getString("timeUp")));
+                post.setTime(Timestamp.valueOf(rs.getString("time")));
                 post.setUserId(rs.getInt("userId"));
                 post.setNameAuthor(rs.getString("nameAuthor"));
             }
@@ -117,6 +122,80 @@ public class PostDAO {
             ResultSet rs=ps.executeQuery();
             if (rs.next()){
                 ans =rs.getInt("count(*)");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ans;
+    }
+    public List<Post> getAllFollow(int userId){
+        List<Post> posts = new ArrayList<>();
+        try{
+            Connection connection=getConnection();
+            PreparedStatement ps= connection.prepareStatement(GET_ALL_POST_FOLLOW);
+            ps.setString(1,String.valueOf(userId));
+            ResultSet rs=ps.executeQuery();
+            while(rs.next()){
+                Post post = new Post();
+                post.setPostId(rs.getInt("postId"));
+                post.setType(rs.getString("type"));
+                post.setTags(rs.getString("tags"));
+                post.setContent(rs.getString("content"));
+                post.setTitle(rs.getString("title"));
+                post.setTime(Timestamp.valueOf(rs.getString("time")));
+                post.setUserId(rs.getInt("userId"));
+                post.setNameAuthor(rs.getString("nameAuthor"));
+                posts.add(post);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return posts;
+    }
+    public List<Post> getAllBookmark(int userId){
+        List<Post> posts = new ArrayList<>();
+        try{
+            Connection connection=getConnection();
+            PreparedStatement ps= connection.prepareStatement(GET_ALL_POST_BOOKMARK);
+            ps.setString(1,String.valueOf(userId));
+            ResultSet rs=ps.executeQuery();
+            while(rs.next()){
+                Post post = new Post();
+                post.setPostId(rs.getInt("postId"));
+                post.setType(rs.getString("type"));
+                post.setTags(rs.getString("tags"));
+                post.setContent(rs.getString("content"));
+                post.setTitle(rs.getString("title"));
+                post.setTime(Timestamp.valueOf(rs.getString("time")));
+                post.setUserId(rs.getInt("userId"));
+                post.setNameAuthor(rs.getString("nameAuthor"));
+                posts.add(post);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return posts;
+    }
+    public List<Post> search(String key){
+        key = "%"+key+"%";
+        List<Post> ans = new ArrayList<>();
+        try {
+            Connection connection =getConnection();
+            PreparedStatement ps =connection.prepareStatement(SEARCH);
+            ps.setString(1,key);
+            ps.setString(2,key);
+            ResultSet rs= ps.executeQuery();
+            while(rs.next()){
+                Post post =new Post();
+                post.setPostId(rs.getInt("postId"));
+                post.setType(rs.getString("type"));
+                post.setTags(rs.getString("tags"));
+                post.setContent(rs.getString("content"));
+                post.setTitle(rs.getString("title"));
+                post.setTime(Timestamp.valueOf(rs.getString("time")));
+                post.setUserId(rs.getInt("userId"));
+                post.setNameAuthor(rs.getString("nameAuthor"));
+                ans.add(post);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

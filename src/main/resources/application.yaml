@@ -7,7 +7,6 @@ spring:
     username: avnadmin
     password: AVNS_jfijrHh9AlwIpwNz30Z
   jpa:
-
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl

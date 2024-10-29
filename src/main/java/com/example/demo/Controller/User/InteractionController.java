@@ -24,4 +24,8 @@ public class InteractionController {
         }
         return "done";
     }
+    @PostMapping("/view")
+    public void addView(@RequestBody Interaction interaction){
+        interactionDAO.addInteractionView(interaction);
+    }
 }

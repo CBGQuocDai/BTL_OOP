@@ -25,15 +25,15 @@ public class ReportDAO {
         return connection;
     }
 
-    private final static String ADD_REPORT ="INSERT INTO report(reportId,postId,commentId,reason,content,time) VALUES(?,?,?,?,?,NOW())";
+    private final static String ADD_REPORT ="INSERT INTO report(postId,commentId,reason,content,time) VALUES(?,?,?,?,NOW())";
     public void addReport(Report r) throws SQLException {
         Connection connection= getConnection();
         PreparedStatement ps = connection.prepareStatement(ADD_REPORT);
-        ps.setString(1,String.valueOf(r.getReportId()));
-        ps.setString(2,String.valueOf(r.getPostId()));
-        ps.setString(3,String.valueOf(r.getCommentId()));
-        ps.setString(4,r.getReason());
-        ps.setString(5,r.getContent());
+
+        ps.setString(1,String.valueOf(r.getPostId()));
+        ps.setString(2,String.valueOf(r.getCommentId()));
+        ps.setString(3,r.getReason());
+        ps.setString(4,r.getContent());
         ps.execute();
     }
 }

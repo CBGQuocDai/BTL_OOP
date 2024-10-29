@@ -16,6 +16,32 @@
             font-size: 1.3em;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+        function connect() {
+            var socket = new SockJS('/gs-guide-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/topic/notifications', function (notification) {
+                    showNotification(JSON.parse(notification.body));
+                });
+            });
+        }
+        function showNotification(notice) {
+            let check= [[${userId}]];
+            const notification= document.getElementById('notification');
+            console.log(check,notice['userId'], check === notice['userId'])
+
+            if( check === notice['userId']) {
+                notification.src='../file/notification2.png';
+            }
+        }
+        window.onload = function() {
+            connect();
+        };
+    </script>
 </head>
 <body>
     <div id="hidden" style="display: none" class="reportForm">
@@ -38,20 +64,21 @@
     <div class="header">
         <ul>
             <li><img style="width: 70px" th:src="@{../file/logo.png}" alt=""></li>
-            <li><a href=""><h2>Post</h2></a></li>
-            <li><a href=""><h2>Question</h2></a></li>
+            <li><a href="/post/latest"><h2>Post</h2></a></li>
+            <li><a href="/question/latest"><h2>Question</h2></a></li>
         </ul>
         <ul class="right">
             <li>
-                <div class="find">
+                <form action="/search" method="get" class="find">
                     <input type="text" placeholder="Search in FoxGraphy">
                     <img th:src="@{../file/searchIcon.png}" alt="">
-                </div>
+                </form>
             </li>
-            <li><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></li>
-            <li><a href="/Post/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
+            <li><a th:href="'/notifications/'+${userId}"><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></a></li>
+            <li><a href="/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
             <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
         </ul>
+
     </div>
     <div class="body">
         <div class="sidebar" >
@@ -75,13 +102,13 @@
                             <button th:text="${stateFollow==1} ? 'following': 'follow'" id="followButton" ></button>
                         </div>
                         <ul class="star">
-                            <li><img th:src="@{../file/follower.png}" alt=""> <span>3</span></li>
-                            <li><img th:src="@{../file/Blog.png}" alt=""> <span>3</span></li>
+                            <li><img th:src="@{../file/follower.png}" alt=""> <span th:text="${author.getCountFollow()}"></span></li>
+                            <li><img th:src="@{../file/Blog.png}" alt=""> <span th:text="${author.getCountPost()}"></span></li>
                         </ul>
                     </div>
                 </div>
                 <div class="timePublic">
-                    <p th:text="${post.getTimeUp()}"></p>
+                    <p th:text="${post.getTime()}"></p>
                     <ul>
                         <li><img th:src="@{../file/watch.png}" alt=""> <span th:text="${post.getCountView()}"></span></li>
                         <li><img th:src="@{../file/comment.png}" alt=""> <span th:text="${post.getCountComment()}"></span></li>
@@ -111,7 +138,7 @@
                             <img th:src="@{'/file/'+${comment.getUserId()}+'.png'}" alt="">
                             <div class="nameUserCmt">
                                 <span th:text="${comment.getUsername()}"></span>
-                                <span th:text="${comment.getTimeUp()}"></span>
+                                <span th:text="${comment.getTime()}"></span>
                             </div>
                         </div>
                         <div  class="contentCmt" th:utext="${comment.getContent()}"></div>
@@ -132,7 +159,7 @@
                                         <img th:src="@{'/file/'+${reply.getUserId()}+'.png'}" alt="">
                                         <div class="nameUserRep">
                                             <span th:text="${reply.getUsername()}"></span>
-                                            <span th:text="${reply.getTimeUp()}"></span>
+                                            <span th:text="${reply.getTime()}"></span>
                                         </div>
                                     </div>
                                     <div  class="contentRep" th:utext="${reply.getContent()}"></div>
@@ -150,7 +177,6 @@
 
         </div>
         <div class="index">
-
         </div>
     </div>
     <script>
@@ -404,7 +430,9 @@
                 }
                 userVote = 1;
             }
-
+            if(currentVote %10 ===0 && currentVote !=0 ){
+                sendNotification(data.postId,[[${post.getUserId()}]],'Tổng số số vote cho bài viết của bạn là '+currentVote);
+            }
             voteCount.textContent = currentVote;  // Cập nhật số vote trên UI
             updateVoteUI();
             sendInteractionRequest('up',-1);
@@ -434,7 +462,7 @@
                 type: Type, // 'up' hoặc 'down'
                 commentId:x,
                 postId: [[${postID}]],
-                userId: [[${userID}]]
+                userId: [[${userId}]]
             };
 
             fetch('/api/vote', {
@@ -473,9 +501,9 @@
 <!--    js cho viết bình luận-->
     <script type="text/javascript">
         document.getElementById('submitComment').addEventListener('submit', function(event) {
+            // event.preventDefault();
 
             const comment = document.getElementById('editor');
-
             let content = comment.textContent;
             console.log(content)
             comment.setAttribute('value','');
@@ -483,10 +511,18 @@
                 parentComment: 0,
                 content: content,
                 postId:[[${postID}]],
-                userId:[[${userID}]],
+                userId:[[${userId}]],
                 username:'[[${username}]]'
             };
-
+            console.log(data)
+            let type ='[[${post.getType()}]]'
+            let msg =""
+            if(type ===  'post')
+                msg= '[[${username}]]'+ ' vừa bình luận bài viết của bạn'
+            else msg='[[${username}]]'+ ' vừa trả lời câu hỏi của bạn'
+            let author = '[[${authorID}]]'
+            if( author !== data.userId)
+                sendNotification(data.postId,[[${post.getUserId()}]],msg)
             // Gửi dữ liệu về server bằng Fetch API
             fetch('/createCmt', {
                 method: 'POST',
@@ -498,6 +534,7 @@
                 .then(response => response.text())
                 .then(data => {
                     document.getElementsByClassName("ck-content").innerHTML = "";
+
                     console.log(data)
                 })
                 .catch((error) => {
@@ -688,9 +725,15 @@
                             parentComment: replyBtn[i].getAttribute('id'),
                             content: content,
                             postId:[[${postID}]],
-                            userId:[[${userID}]],
+                            userId:[[${userId}]],
                             username:'[[${username}]]'
                         };
+                        let type ='[[${post.getType()}]]'
+                        let msg =""
+                            msg= '[[${username}]]'+ ' phản hồi bình luận của bạn'
+                        let author = '[[${authorID}]]'
+                        if( author !== data.userId)
+                            sendNotification(data.postId,[[${post.getUserId()}]],msg)
                         fetch('/createCmt', {
                             method: 'POST',
                             headers: {
@@ -864,7 +907,7 @@
            event.preventDefault();
            stateFollow= (stateFollow+1)%2;
             let data ={
-                userIdSrc:[[${userID}]],
+                userIdSrc:[[${userId}]],
                 userIdDst:[[${authorID}]],
             }
            if(stateFollow === 0){
@@ -903,6 +946,44 @@
            }
         });
 
+    </script>
+<!--   gửi thông báo-->
+    <script>
+        function sendNotification(postId, userId, message) {
+            const notification = {
+                postId: postId,
+                userId: userId,
+                message: message
+            };
+            console.log(notification)
+            fetch('/notifications', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(notification)
+            })
+                .then(response => response.text())
+                .then(data => console.log(data));
+        }
+
+    </script>
+    <script>
+        const notification= document.getElementById('notification');
+        notification.addEventListener('click',(event) => {
+            notification.src="/file/notificationIcon.png";
+        });
+    </script>
+    <script>
+        const search = document.getElementById("search");
+        search.addEventListener('keydown', (event) =>{
+            if(event.key=== "Enter"){
+                let keyword =search.value;
+                if(keyword) {
+                    fetch(`/search?keyword=${encodeURIComponent(keyword)}`)
+                }
+            }
+        })
     </script>
 </body>
 </html>

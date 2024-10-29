@@ -14,8 +14,7 @@ public class CommentController1 {
     private final CommentDAO commentDAO = new CommentDAO();
     @PostMapping("/createCmt")
     public String createCmt(@RequestBody Comment cmt) throws SQLException {
-        cmt.setCommentId(++cnt);
-        //System.out.println("hello"+cmt.getContent());
+//        System.out.println("hello"+cmt.getContent());
         commentDAO.addComment(cmt);
         //System.out.println("world");
         return "done";
