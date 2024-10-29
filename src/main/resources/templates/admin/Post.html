@@ -57,7 +57,7 @@
                 <th>Title</th> <!-- title -->
                 <th>Tags</th> <!-- tags -->
                 <th>Type</th> <!-- type -->
-                <th>Content</th> <!-- content -->
+                <!--  <th>Content</th> content -->
                 <th>Time Uploaded</th> <!-- timeUp -->
                 <th>Action</th> <!-- Edit/Delete actions -->
             </tr>
@@ -71,12 +71,10 @@
                 <td th:text="${post.title}">Title</td> <!-- Title -->
                 <td th:text="${post.tags}">Tags</td> <!-- Tags -->
                 <td th:text="${post.type}">Type</td> <!-- Type -->
-                <td th:text="${post.content.length() > 100 ? post.content.substring(0, 100) + '...' : post.content}">
-                    Content
-                </td> <!-- Content (truncated) -->
+                <!-- <td th:text="${post.content.length() > 100 ? post.content.substring(0, 100) + '...' : post.content}"> Content </td> Content (truncated) -->
                 <td th:text="${post.timeUp}">Time Uploaded</td> <!-- Time Uploaded -->
                 <td>
-                    <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Xoá</a>
+                  <a th:href="@{/post-view/{id}(id=${post.postId})}" class="btn btn-success">View</a> <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         </tbody>
