@@ -23,12 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-
 @Controller
 @RequestMapping("")
 public class PostController1 {
-    static int postId=26;
+    static int postId=0;
     static boolean missingTitle=false,missingTags=false,missingContent=false;
     private final PostDAO postDAO =new PostDAO();
     private final InteractionDAO interactionDAO = new InteractionDAO();
@@ -39,7 +37,6 @@ public class PostController1 {
     private Post pre_post=new Post();
     @Autowired
     private NotificationDAO notificationDAO;
-
     @GetMapping("/post/latest")
     public String allPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
@@ -177,11 +174,8 @@ public class PostController1 {
             postSubmit.setUserId((int)httpSession.getAttribute("userId"));
             postSubmit.setNameAuthor((String)httpSession.getAttribute("username"));
             postDAO.addPost(postSubmit);
-
             LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
             Timestamp timestamp = Timestamp.valueOf(localDateTime);
-
-
             ArrayList<Integer> follower= followDAO.getAllFollower(postSubmit.getUserId());
             for(int x:follower){
                 Notification notice = new Notification();

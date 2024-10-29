@@ -17,7 +17,6 @@ public class FollowController {
     @PostMapping("/delete")
     public String unfollow(@RequestBody Follow follow) throws SQLException {
         followDAO.delete(follow.getUserIdSrc(),follow.getUserIdDst());
-
         return "done";
     }
     @PostMapping("/insert")

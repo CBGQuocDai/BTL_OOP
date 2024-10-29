@@ -10,7 +10,7 @@
     justify-content: space-between;
 }
 
-.header {
+.header{
     background-color: black;
     min-height: 60px;
     width: 100%;
@@ -18,51 +18,47 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-
-    ul {
-        margin: 0 7%;
+    padding: 0 5vw;
+    box-sizing: border-box;
+    ul{
         display: flex;
-        height: 100%;
+        height: 60px;
         flex-direction: row;
-        justify-content: center;
-        align-items: center;
         list-style: none;
-        gap: 25px;
+        gap:25px;
         padding: 0;
-
-        li {
+        margin:0;
+        li{
             height: 100%;
             color: white;
             display: flex;
             align-items: center;
-
-            a {
+            a{
                 height: 20px;
                 display: flex;
                 align-items: center;
-                color: white;
+                color:white;
                 text-decoration: none;
-
-                h2 {
+                h2{
+                    display: flex;
+                    align-items: center;
                     font-size: 1.8em;
                     margin-left: 30px;
+                    margin-top:0;
+                    margin-bottom: 0;
                 }
-
-                img {
+                img{
                     width: 55px;
                 }
             }
         }
     }
-
-    .left {
+    .left{
         justify-content: flex-start;
     }
-
-    .right {
+    .right{
         justify-content: flex-end;
-
-        .find {
+        .find{
             display: flex;
             align-items: center;
             background-color: white;
@@ -70,40 +66,33 @@
             object-fit: cover;
             border-radius: 5px;
             overflow: hidden;
-            width: 250px;
 
-            img {
+            img{
                 height: 25px;
                 width: 25px;
+                display: flex;
+                justify-content: flex-end;
             }
         }
-
-        .icon {
+        .icon{
             height: 20px;
             width: 20px;
             cursor: pointer;
         }
     }
-
-    input {
+    input{
         height: 22px;
-        width: 220px;
+        width: 15vw;
         outline: none;
         border: none;
         margin-left: 10px;
     }
-
-    #avatar {
+    #avatar{
         width: 30px;
         height: 30px;
+        border-radius: 100%;
     }
 }
-
-
-
-
-
-
 
 
 .inner-avatar {

@@ -22,9 +22,8 @@ public class LoginController {
         modelMap.addAttribute("user",new User());
         return "login";
     }
-
     @PostMapping("/login")
-    public String postLogin(@ModelAttribute("user") User userC, BindingResult result, HttpSession httpSession) throws SQLException {
+    public String handleLogin(@ModelAttribute("user") User userC, BindingResult result, HttpSession httpSession) throws SQLException {
         boolean missingUsername =result.hasFieldErrors("username");
         boolean missingPassword =result.hasFieldErrors("password");
         if(!missingPassword && !missingUsername){

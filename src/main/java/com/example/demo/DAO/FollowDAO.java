@@ -73,7 +73,6 @@ public class FollowDAO {
         ArrayList<Integer> follower=new ArrayList<>();
         try{
             Connection connection=getConnection();
-
             PreparedStatement ps =connection.prepareStatement(GET_ALL_FOLLOWER);
             ps.setInt(1,userId);
             ResultSet rs=ps.executeQuery();

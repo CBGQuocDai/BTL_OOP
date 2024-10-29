@@ -19,7 +19,8 @@ public class PostDAO {
     private static final String GET_POST_BY_ID= "SELECT * FROM post WHERE postId = ?";
     private static final String GET_ALL_POST= "SELECT * FROM post ORDER BY post.postId DESC";
     private final String DELETE_POST = "DELETE FROM post WHERE postId = ?";
-    private static final String GET_POSTS_BY_USER_ID = "SELECT * FROM post WHERE userId = ?";
+    private static final String GET_POSTS_BY_USER_ID = "SELECT * FROM post WHERE userId = ? AND type ='post' ORDER BY postId DESC";
+    private static final String GET_QUESTIONS_BY_USER_ID = "SELECT * FROM post WHERE userId = ? AND type ='question' ORDER BY postId DESC";
     public void deletePostById (String id) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(DELETE_POST);
@@ -219,7 +220,7 @@ public class PostDAO {
                 post.setTags(rs.getString("tags"));
                 post.setType(rs.getString("type"));
                 post.setContent(rs.getString("content"));
-                post.setTime(rs.getTimestamp("timeUp"));
+                post.setTime(rs.getTimestamp("time"));
                 post.setNameAuthor(rs.getString("nameAuthor"));
                 posts.add(post);
             }
@@ -229,5 +230,29 @@ public class PostDAO {
             e.printStackTrace();
         }
         return posts;
+    }
+    public List<Post> getQuestionsByUserId(int userId){
+        List<Post> questions = new ArrayList<>();
+        try {
+            Connection connection= getConnection();
+            PreparedStatement ps =connection.prepareStatement(GET_QUESTIONS_BY_USER_ID);
+            ps.setInt(1,userId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Post question = new Post();
+                question.setPostId(rs.getInt("postId"));
+                question.setType(rs.getString("type"));
+                question.setTags(rs.getString("tags"));
+                question.setContent(rs.getString("content"));
+                question.setTitle(rs.getString("title"));
+                question.setTime(Timestamp.valueOf(rs.getString("time")));
+                question.setUserId(rs.getInt("userId"));
+                question.setNameAuthor(rs.getString("nameAuthor"));
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return questions;
     }
 }

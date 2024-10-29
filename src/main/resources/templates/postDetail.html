@@ -70,13 +70,13 @@
         <ul class="right">
             <li>
                 <form action="/search" method="get" class="find">
-                    <input type="text" placeholder="Search in FoxGraphy">
+                    <input id="search" type="text" name="keyword" placeholder="Search in FoxGraphy" required>
                     <img th:src="@{../file/searchIcon.png}" alt="">
                 </form>
             </li>
-            <li><a th:href="'/notifications/'+${userId}"><img class="icon" th:src="@{../file/notificationIcon.png}" alt=""></a></li>
+            <li><a th:href="'/notifications/'+${userId}"><img class="icon" id="notification" th:src="@{../file/notificationIcon.png}" alt=""></a></li>
             <li><a href="/create"><img class="icon"  th:src="@{../file/writeBlog.png}" alt=""></a></li>
-            <li><a href=""><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
+            <li><a href="/My_Profile/userInfo"><img class="icon" id="avatar" th:src="@{${avatarUser}}" alt=""></a></li>
         </ul>
 
     </div>

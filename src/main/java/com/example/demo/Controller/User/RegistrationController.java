@@ -10,6 +10,4 @@ import com.example.demo.DAO.*;
 @RestController
 public class RegistrationController {
 
-
-
 }
