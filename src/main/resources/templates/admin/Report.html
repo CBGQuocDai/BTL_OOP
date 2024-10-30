@@ -17,13 +17,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        Manage Posts
+        Manage Reports
        
       </h1>
       <ol class="breadcrumb">
         <li><a href="#">Home</a></li>
         <li><a href="#">Admin</a></li>
-        <li class="active">Posts</li>
+        <li class="active">Reports</li>
       </ol>
     </section>
 
@@ -52,29 +52,25 @@
         <thead>
             <tr>
                 <th>STT</th> <!-- Index for row number -->
+                <th>Report ID</th> <!-- reportId -->
                 <th>Post ID</th> <!-- postId -->
-                <th>User ID</th> <!-- userId -->
-                <th>Title</th> <!-- title -->
-                <th>Tags</th> <!-- tags -->
-                <th>Type</th> <!-- type -->
-                <!--  <th>Content</th> content -->
-                <th>Time Uploaded</th> <!-- timeUp -->
+                <th>Comment ID</th> <!-- commentID -->
+                <th>Reason</th> <!-- Reason -->
+                <th>Time Uploaded</th> <!-- time -->
                 <th>Action</th> <!-- Edit/Delete actions -->
             </tr>
         </thead>
         <tbody>
             <!-- Iterate over the list of posts -->
-            <tr th:each="post, stat : ${posts}">
+            <tr th:each="report, stat : ${report}">
                 <td th:text="${stat.index + 1}">1</td> <!-- Row index (STT) -->
-                <td th:text="${post.postId}">ID Post</td> <!-- Post ID -->
-                <td th:text="${post.userId}">User ID</td> <!-- User ID -->
-                <td th:text="${post.title}">Title</td> <!-- Title -->
-                <td th:text="${post.tags}">Tags</td> <!-- Tags -->
-                <td th:text="${post.type}">Type</td> <!-- Type -->
-                <!-- <td th:text="${post.content.length() > 100 ? post.content.substring(0, 100) + '...' : post.content}"> Content </td> Content (truncated) -->
-                <td th:text="${post.timeUp}">Time Uploaded</td> <!-- Time Uploaded -->
+                <td th:text="${report.reportId}">Report ID</td> <!-- Report ID -->
+                <td th:text="${report.postId}">Post ID</td> <!-- Post ID -->
+                <td th:text="${report.commentId}">Comment ID</td> <!-- Comment ID -->
+                <td th:text="${report.reason}">Reason</td> <!-- Reason -->
+                <td th:text="${report.time}">Time Uploaded</td> <!-- Time Uploaded -->
                 <td>
-                  <a th:href="@{/post-view/{id}(id=${post.postId})}" class="btn btn-success">View</a> <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Delete</a>
+                  <a th:href="@{/report-view/{id}(id=${report.reportId})}" class="btn btn-success">View</a> <a th:href="@{/delete-report(id=${report.reportId})}" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         </tbody>
