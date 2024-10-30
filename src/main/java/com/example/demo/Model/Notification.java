@@ -11,6 +11,7 @@ public class Notification {
     private String message;
     private int postId;
     private int userId;
+    private int state;
     private Timestamp time;
     public Notification(){};
     public int getId() {
@@ -19,6 +20,14 @@ public class Notification {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public String getMessage() {

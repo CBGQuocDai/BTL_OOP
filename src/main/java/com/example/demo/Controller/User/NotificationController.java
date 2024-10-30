@@ -49,6 +49,7 @@ public class NotificationController {
         modelMap.addAttribute("notifications", notifications);
         modelMap.addAttribute("avatarUser",user.getAvatar());
         modelMap.addAttribute("userId",user.getUserId());
+        notificationDAO.update(user.getUserId());
         return "notice";
     }
 }

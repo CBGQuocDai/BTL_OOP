@@ -99,11 +99,13 @@
 //Dùng cái dưới này khi userId được lưu vào session
 
 package com.example.demo.Controller.User;
+import com.example.demo.DAO.NotificationDAO;
 import com.example.demo.DAO.PostDAO;
 import com.example.demo.DAO.UserDAO;
 import com.example.demo.Model.Post;
 import com.example.demo.Model.User;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -121,10 +123,11 @@ import java.util.List;
 public class MyProfileController {
     private final UserDAO userDAO;
     private final PostDAO postDAO;
-
-    public MyProfileController(UserDAO userDAO, PostDAO postDAO) {
+    private final NotificationDAO notificationDAO;
+    public MyProfileController(UserDAO userDAO, PostDAO postDAO,NotificationDAO notificationDAO) {
         this.userDAO = userDAO;
         this.postDAO = postDAO;
+        this.notificationDAO=notificationDAO;
     }
 
     @GetMapping("/userInfo")
@@ -135,6 +138,8 @@ public class MyProfileController {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         User user = userDAO.getUserByUserId(userId);
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(userId);
+        model.addAttribute("stateNotice",stateNotice);
         model.addAttribute("user", user);
         model.addAttribute("userId", userId);
         model.addAttribute("avatarUser","/file/"+userId+".png");
@@ -155,6 +160,7 @@ public class MyProfileController {
     @GetMapping("/question")
     public String question(Model model, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
+
         if (userId == null) {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
@@ -162,6 +168,8 @@ public class MyProfileController {
         model.addAttribute("posts", questions);
         model.addAttribute("userId", userId);
         model.addAttribute("avatarUser","/file/"+userId+".png");
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(userId);
+        model.addAttribute("stateNotice",stateNotice);
         return "profile_question";
     }
 
@@ -172,6 +180,8 @@ public class MyProfileController {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         List<Post> posts = postDAO.getPostsByUserId(userId);
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(userId);
+        model.addAttribute("stateNotice",stateNotice);
         model.addAttribute("posts", posts);
         model.addAttribute("userId", userId);
         model.addAttribute("avatarUser","/file/"+userId+".png");
@@ -185,6 +195,8 @@ public class MyProfileController {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         User user = userDAO.getUserByUserId(userId);
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(userId);
+        model.addAttribute("stateNotice",stateNotice);
         model.addAttribute("user", user);
         model.addAttribute("userId", userId);
         model.addAttribute("avatarUser","/file/"+userId+".png");

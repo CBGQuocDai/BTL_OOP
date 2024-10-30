@@ -40,14 +40,15 @@ public class PostController1 {
     @GetMapping("/post/latest")
     public String allPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-        List<Post> posts= postDAO.getAllPost();
+        List<Post> posts= postDAO.getAllPost1();
         for(Post post:posts){
             post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
             post.setCountView(interactionDAO.countView(post.getPostId()));
             post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
-
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("type","post");
         modelMap.addAttribute("index","latest");
         modelMap.addAttribute("userId",user.getUserId());
@@ -58,14 +59,15 @@ public class PostController1 {
     @GetMapping("/post/follow")
     public String followPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-        List<Post> posts= postDAO.getAllFollow(user.getUserId());
+        List<Post> posts= postDAO.getAllFollow(user.getUserId(),"post");
         for(Post post:posts){
             post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
             post.setCountView(interactionDAO.countView(post.getPostId()));
             post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
-
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("userId",user.getUserId());
         modelMap.addAttribute("type","post");
         modelMap.addAttribute("index","follow");
@@ -76,14 +78,15 @@ public class PostController1 {
     @GetMapping("/post/bookmark")
     public String bookmarkPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-        List<Post> posts= postDAO.getAllBookmark(user.getUserId());
+        List<Post> posts= postDAO.getAllBookmark(user.getUserId(),"post");
         for(Post post:posts){
             post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
             post.setCountView(interactionDAO.countView(post.getPostId()));
             post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
-
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("userId",user.getUserId());
         modelMap.addAttribute("type","post");
         modelMap.addAttribute("index","bookmark");
@@ -91,18 +94,18 @@ public class PostController1 {
         modelMap.addAttribute("Posts",posts);
         return "listPost";
     }
-
     @GetMapping("/question/latest")
     public String allQuestion(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-        List<Post> posts= postDAO.getAllPost();
+        List<Post> posts= postDAO.getAllQuestion();
         for(Post post:posts){
             post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
             post.setCountView(interactionDAO.countView(post.getPostId()));
             post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
-
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("userId",user.getUserId());
         modelMap.addAttribute("type","question");
         modelMap.addAttribute("index","latest");
@@ -113,14 +116,15 @@ public class PostController1 {
     @GetMapping("/question/follow")
     public String followQuestion(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-        List<Post> posts= postDAO.getAllFollow(user.getUserId());
+        List<Post> posts= postDAO.getAllFollow(user.getUserId(),"question");
         for(Post post:posts){
             post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
             post.setCountView(interactionDAO.countView(post.getPostId()));
             post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
-
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("userId",user.getUserId());
         modelMap.addAttribute("type","question");
         modelMap.addAttribute("index","follow");
@@ -131,14 +135,15 @@ public class PostController1 {
     @GetMapping("/question/bookmark")
     public String bookmarkQuestion(ModelMap modelMap,HttpSession httpSession) throws SQLException {
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-        List<Post> posts= postDAO.getAllBookmark(user.getUserId());
+        List<Post> posts= postDAO.getAllBookmark(user.getUserId(),"question");
         for(Post post:posts){
             post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
             post.setCountView(interactionDAO.countView(post.getPostId()));
             post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
-
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("userId",user.getUserId());
         modelMap.addAttribute("type","question");
         modelMap.addAttribute("index","bookmark");
@@ -151,7 +156,8 @@ public class PostController1 {
     public String create(ModelMap modelMap, HttpSession httpSession) throws SQLException {
         post=pre_post;
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
-
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
 //        System.out.println(user.getAvatar());
         modelMap.addAttribute("avatarUser", user.getAvatar());
         modelMap.addAttribute("userId", user.getUserId());
@@ -217,6 +223,8 @@ public class PostController1 {
             c.setCountVote(interactionDAO.getNumVoteComment(c.getCommentId()));
             c.setStateVote(interactionDAO.getStateVoteComment(c.getCommentId(),user.getUserId()));
         }
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("Comments",cmt);
         modelMap.addAttribute("author",author);
         modelMap.addAttribute("avatarAuthor",author.getAvatar());
@@ -240,6 +248,8 @@ public class PostController1 {
     public String search(@RequestParam("keyword") String key, ModelMap modelMap, HttpSession httpSession) throws SQLException {
         List<Post> posts= postDAO.search(key);
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("posts",posts);
         modelMap.addAttribute("userId",user.getUserId());
         modelMap.addAttribute("avatarUser",user.getAvatar());

@@ -13,6 +13,10 @@ CREATE Table post(
                      title varchar(1024),
                      tags varchar(100),
                      type varchar(10),
+                     countVote int default 0,
+                     countBookmark int default 0,
+                     countComment int default 0,
+                     countView int default 0,
                      content TEXT,
                      time timestamp
 );
@@ -54,6 +58,7 @@ CREATE TABLE notifications (
                                message VARCHAR(1024) NOT NULL,
                                postId INT NOT NULL,
                                userId INT NOT NULL,
+                                state INT DEFAULT 1, -- 1 chưa xem, 0 đã xem
                                time TIMESTAMP
 );
 insert into user(userId,userName,email,password,gender,avatar,role)
