@@ -41,6 +41,8 @@
             </textarea>
         </div>
         <p class="error" th:if="${missingContent}">Missing Content</p>
+        <p style="display: none" th:text="${Post.getPostId()}"> </p>
+        <input style="display: none" th:field="*{postId}" th:value="${Post.getPostId()}" type="text"/>
         <button type="submit">Upload</button>
     </form>
     <script>

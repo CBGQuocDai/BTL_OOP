@@ -70,7 +70,7 @@
                 <td th:text="${comment.username}">Username</td> <!-- Username -->
                 <!-- Truncate the content if it's too long (e.g., more than 100 characters) -->
                 <!-- <td th:text="${comment.content.length() > 100 ? comment.content.substring(0, 100) + '...' : comment.content}"> Content </td>  Comment Content -->
-                <td th:text="${comment.timeUp}">Time Posted</td> <!-- Time Posted -->
+                <td th:text="${comment.time}">Time Posted</td> <!-- Time Posted -->
                 <td>
                     <!-- Link to edit user -->
 <!--                    <a th:href="@{/admin/edit-menu(id=${user.userId})}" class="btn btn-success">Edit</a>-->

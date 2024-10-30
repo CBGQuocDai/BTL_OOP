@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -176,25 +177,31 @@ public class PostController1 {
         missingTags = result.hasFieldErrors("tags");
         missingTitle = result.hasFieldErrors("title");
         if(!result.hasErrors()) {
-            postSubmit.setPostId(++postId);
-            postSubmit.setUserId((int)httpSession.getAttribute("userId"));
-            postSubmit.setNameAuthor((String)httpSession.getAttribute("username"));
-            postDAO.addPost(postSubmit);
-            LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
-            Timestamp timestamp = Timestamp.valueOf(localDateTime);
-            ArrayList<Integer> follower= followDAO.getAllFollower(postSubmit.getUserId());
-            for(int x:follower){
-                Notification notice = new Notification();
-                notice.setUserId(x);
-                notice.setPostId(postId);
-                notice.setTime(timestamp);
-                notice.setMessage(String.format("%s vừa đăng một bài viết mới",postSubmit.getNameAuthor()));
-                notificationDAO.save(notice);
-                messagingTemplate.convertAndSend("/topic/notifications", notice);
+            if(postDAO.checkExit(postSubmit.getPostId())){
+                postDAO.update(postSubmit);
+                return "redirect:/"+(postSubmit.getPostId());
             }
-            post=new Post();
-            pre_post = new Post();
-            return "redirect:/"+(postId);
+            else {
+                ++postId;
+                postSubmit.setUserId((int)httpSession.getAttribute("userId"));
+                postSubmit.setNameAuthor((String)httpSession.getAttribute("username"));
+                postDAO.addPost(postSubmit);
+                LocalDateTime localDateTime = LocalDateTime.now(ZoneOffset.UTC);
+                Timestamp timestamp = Timestamp.valueOf(localDateTime);
+                ArrayList<Integer> follower= followDAO.getAllFollower(postSubmit.getUserId());
+                for(int x:follower){
+                    Notification notice = new Notification();
+                    notice.setUserId(x);
+                    notice.setPostId(postId);
+                    notice.setTime(timestamp);
+                    notice.setMessage(String.format("%s vừa đăng một bài viết mới",postSubmit.getNameAuthor()));
+                    notificationDAO.save(notice);
+                    messagingTemplate.convertAndSend("/topic/notifications", notice);
+                }
+                post=new Post();
+                pre_post = new Post();
+                return "redirect:/"+(postId);
+            }
         }
         else {
             pre_post= postSubmit;
@@ -255,4 +262,25 @@ public class PostController1 {
         modelMap.addAttribute("avatarUser",user.getAvatar());
         return "search";
     }
+
+    @GetMapping("/edit/{id}")
+    public String edit(ModelMap modelMap, @PathVariable int id,HttpSession httpSession) throws SQLException {
+        Post post = postDAO.getPostById(id);
+        User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
+        boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
+        modelMap.addAttribute("stateNotice",stateNotice);
+        modelMap.addAttribute("Post",post);
+        modelMap.addAttribute("avatarUser", user.getAvatar());
+        modelMap.addAttribute("userId", user.getUserId());
+        modelMap.addAttribute("missingTitle",missingTitle);
+        modelMap.addAttribute("missingTags",missingTags);
+        modelMap.addAttribute("missingContent",missingContent);
+        return "create";
+    }
+    @RequestMapping("/deletePost")
+    public String deleteUser(Model model , @RequestParam("id") String userId) throws Exception {
+        postDAO.deletePostById(userId);
+        return "redirect:/My_Profile/post";
+    }
+
 }

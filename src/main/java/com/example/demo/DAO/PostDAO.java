@@ -36,7 +36,7 @@ public class PostDAO {
     private static final String GET_ALL_POST_FOLLOW ="SELECT * FROM post JOIN follow ON post.userId = follow.userIdDst AND follow.userIdSrc=? AND post.type=? ORDER BY post.postId DESC";
     private static final String GET_ALL_POST_BOOKMARK ="SELECT * FROM post JOIN interaction ON post.postId = interaction.postId AND interaction.userId=?  AND post.type=? AND interaction.type='bookmark' ORDER BY post.postId DESC";
     private static final String SEARCH = "SELECT * FROM post WHERE title LIKE ? AND tags LIKE ? ORDER By postId DESC";
-
+    private static final String UPDATE= "UPDATE post SET title = ?,tags=?,type=?,content=? WHERE postId=?";
     public PostDAO(){}
     protected Connection getConnection() {
         Connection connection = null;
@@ -305,5 +305,34 @@ public class PostDAO {
             throw new RuntimeException(e);
         }
         return questions;
+    }
+    public boolean checkExit(int postId){
+        try{
+            Connection connection =getConnection();
+            PreparedStatement ps= connection.prepareStatement(GET_POST_BY_ID);
+            ps.setInt(1,postId);
+            ResultSet rs= ps.executeQuery();
+            if(rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+    public void update(Post post){
+        try{
+            Connection connection = getConnection();
+            PreparedStatement ps =connection.prepareStatement(UPDATE);
+            ps.setString(1,post.getTitle());
+            ps.setString(2,post.getTags());
+            ps.setString(3,post.getType());
+            ps.setString(4,post.getContent());
+            ps.setInt(5,post.getPostId());
+            ps.execute();
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

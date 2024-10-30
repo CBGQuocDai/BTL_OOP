@@ -94,31 +94,36 @@
                 </div>
                 <div class="col-9">
                     <div class="inner-content">
-                        <div th:each="post : ${posts}" class="inner-box d-flex p-4">
-                            <div class="inner-avatar mr-2 mt-3">
-                                <img src="" alt="" />
-                            </div>
+                        <div th:each="post : ${posts}" class="inner-box d-flex p-4" style="display: flex;flex-direction: row;justify-content: space-between">
+
                             <div class="inner-content">
-                                <div class="inner-head mb-2">
-                                    <span th:text="${post.time}" class="mr-3">23/09/2024 - 20:30</span>
-                                </div>
-                                <div class="inner-mid mb-2">
-                                    <div th:utext="${post.title}" class="inner-desc font-weight-bold mb-1">
-                                        Comparable và Comparator trong Java: Bạn
-                                        nên lựa chọn cái nào?
+                                <a style="text-decoration: none; color:black;" th:href="@{'../'+${post.getPostId()}}">
+                                    <div class="inner-head mb-2">
+                                        <span th:text="${post.time}" class="mr-3">23/09/2024 - 20:30</span>
                                     </div>
-                          
+                                    <div class="inner-mid mb-2">
+                                        <div th:utext="${post.title}" class="inner-desc font-weight-bold mb-1">
+                                            Comparable và Comparator trong Java: Bạn
+                                            nên lựa chọn cái nào?
+                                        </div>
+
                                         <div th:each="tag:${post.tags.split(',')}" th:text="${tag}" class="btn btn-secondary btn-sm py-1">
                                             Java
                                         </div>
-                          
-                                </div>
-                                <div class="inner-foot d-flex">
-                                    <i class="fa-solid fa-caret-up mr-3" > <span style="margin-right: 7px" th:text="${post.countVote}">90</span></i>
-                                    <i class="fa-regular fa-bookmark mr-3"><span style="margin-left:7px" th:text="${post.countBookmark}">90</span></i>
-                                    <i class="fa-regular fa-message"><span style="margin-left:7px" th:text="${post.countComment}">90</span></i>
-                                </div>
+
+                                    </div>
+                                    <div class="inner-foot d-flex">
+                                        <i class="fa-solid fa-caret-up mr-3" > <span style="margin-right: 7px" th:text="${post.countVote}">90</span></i>
+                                        <i class="fa-regular fa-bookmark mr-3"><span style="margin-left:7px" th:text="${post.countBookmark}">90</span></i>
+                                        <i class="fa-regular fa-message"><span style="margin-left:7px" th:text="${post.countComment}">90</span></i>
+                                    </div>
+                                </a>
+
                             </div>
+                            <span style="display: flex; font-size: 1.5em;align-items: center;cursor: pointer;gap:10px;">
+                                <a style="text-decoration: none; color:black;" th:href="@{'../edit/'+${post.getPostId()}}">Edit</a>
+                                <a style="text-decoration: none; color:red;" th:href="@{/deletePost(id=${post.postId})}" >Delete</a>
+                            </span>
                         </div>
 
                     </div>

@@ -76,7 +76,7 @@ public class Post {
 
     public Post(){
         this.type="post";
-        this.postId=++cnt;
+        this.postId=-1;
     }
 
     public int getPostId() {
