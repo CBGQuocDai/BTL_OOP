@@ -113,7 +113,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +129,7 @@ public class MyProfileController {
     private final UserDAO userDAO;
     private final PostDAO postDAO;
     private final NotificationDAO notificationDAO;
+    private final String UPLOAD_DIR = "/file";
     public MyProfileController(UserDAO userDAO, PostDAO postDAO,NotificationDAO notificationDAO) {
         this.userDAO = userDAO;
         this.postDAO = postDAO;
@@ -230,6 +236,25 @@ public class MyProfileController {
 
         return "redirect:/My_Profile/userInfo?success=Password changed successfully";
     }
+    @PostMapping("/changeAvatar")
+    public String updateAvatar(@RequestParam("file") MultipartFile file) {
+        int userId = 2;
+        if (file.isEmpty()) {
+            return "redirect:/My_Profile/userInfo?error=File is empty";
+        }
 
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+            Files.write(path, bytes);
+
+            userDAO.updateAvatar(userId, path.toString());
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return "redirect:/My_Profile/userInfo?error=Could not upload file";
+        }
+
+        return "redirect:/My_Profile/userInfo?success=Avatar changed successfully";
+    }
 }
 
