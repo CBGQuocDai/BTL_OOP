@@ -26,7 +26,8 @@ public class ReportControllerA {
     }
 
     @RequestMapping("/report-view/{id}")
-    public String ReportView(Model Model){
+    public String ReportView(Model model, @RequestParam("id") int reportId) throws Exception {
+        reportDAO.selectReportById(reportId);
         return "admin/report-view";
     }
 }

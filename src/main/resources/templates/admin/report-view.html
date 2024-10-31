@@ -40,14 +40,11 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr th:each="report: ${reports}">
-                      <td th:text="${report.content}"></td>
+                  <tr>
+                      <td class="content" th:text="${report.content()}"></td>
                   </tr>
               </tbody>
           </table>
-      </div>
-        <div class="box-footer">
-          <a th:href="@{/delete-report(id=${report.reportId})}" class="btn btn-danger">Delete</a>
         </div>
         <!-- /.box -->
       </div>

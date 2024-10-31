@@ -40,14 +40,11 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr th:each="post: ${posts}">
-                      <td th:text="${post.content}"></td>
+                  <tr>
+                    <td class="content" th:text="${post.getContent()}"></td>
                   </tr>
               </tbody>
           </table>
-      </div>
-        <div class="box-footer">
-          <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Delete</a>
         </div>
         <!-- /.box -->
       </div>
