@@ -20,7 +20,8 @@ public class UserDAO {
     private final String GET_USER_BY_USERID = "SELECT * FROM user WHERE userId =? ";
     private final String GET_ALL_USER = "SELECT * FROM user";
     private final String DELETE_USER = "DELETE FROM user WHERE userId = ?";
-    private final String UPDATE_USER = "UPDATE user SET userName = ?, password = ?, gender = ?, email = ?, avatar = ?, role = ? WHERE userId = ?";
+    private final String UPDATE_USER = "UPDATE user SET username = ?, phone = ?, password = ?, gender = ?, email = ? WHERE userId = ?";
+    private final String UPDATE_AVATAR = "UPDATE user SET avatar = ? WHERE userId = ?";
 
     public UserDAO() {
     }
@@ -106,15 +107,21 @@ public class UserDAO {
 
     public void updateUser(User user) throws SQLException {
         try (Connection connection = getConnection(); PreparedStatement ps = connection.prepareStatement(UPDATE_USER)) {
-
             ps.setString(1, user.getUsername());
-            ps.setString(2, user.getPassword());
-            ps.setInt(3, user.getGender());
-            ps.setString(4, user.getEmail());
-            ps.setString(5, user.getAvatar());
-            ps.setString(6, user.getRole());
-            ps.setInt(7, user.getUserId());
+            ps.setString(2, user.getPhone());
+            ps.setString(3, user.getPassword());
+            ps.setInt(4, user.getGender());
+            ps.setString(5, user.getEmail());
+            ps.setInt(6, user.getUserId());
 
+            ps.executeUpdate();
+        }
+    }
+
+    public void updateAvatar(int userId, String avatarPath) throws SQLException {
+        try (Connection connection = getConnection(); PreparedStatement ps = connection.prepareStatement(UPDATE_AVATAR)) {
+            ps.setString(1, avatarPath);
+            ps.setInt(2, userId);
             ps.executeUpdate();
         }
     }

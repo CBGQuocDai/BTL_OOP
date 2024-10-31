@@ -8,15 +8,17 @@ import com.example.demo.DAO.PostDAO;
 import com.example.demo.DAO.UserDAO;
 import com.example.demo.Model.Post;
 import com.example.demo.Model.User;
-import java.sql.SQLException;
-import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/My_Profile")
 public class MyProfileController {
+
+    private final String UPLOAD_DIR = "/file";
 
     private final UserDAO userDAO;
 
@@ -44,12 +48,39 @@ public class MyProfileController {
     }
 
     @PostMapping("/userInfo")
-    public String updateUserInfo(@ModelAttribute User user) throws SQLException {
-        userDAO.updateUser(user);
+    public String updateUserInfo(@ModelAttribute User user) {
+        try {
+            userDAO.updateUser(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "errorPage";
+        }
         return "redirect:/My_Profile/userInfo";
     }
 
+    @PostMapping("/changeAvatar")
+    public String updateAvatar(@RequestParam("file") MultipartFile file) {
+        int userId = 2; 
+        if (file.isEmpty()) {
+            return "redirect:/My_Profile/userInfo?error=File is empty";
+        }
+
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+            Files.write(path, bytes);
+
+            userDAO.updateAvatar(userId, path.toString());
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            return "redirect:/My_Profile/userInfo?error=Could not upload file";
+        }
+
+        return "redirect:/My_Profile/userInfo?success=Avatar changed successfully";
+    }
+
     @GetMapping("/question")
+
     public String question(Model model) {
         int userId = 4;
         List<Post> posts = postDAO.getPostsByUserId(userId);
@@ -99,7 +130,6 @@ public class MyProfileController {
 }
 
 //Dùng cái dưới này khi userId được lưu vào session
-
 //package com.example.demo.Controller.User;
 //
 //import com.example.demo.DAO.PostDAO;
