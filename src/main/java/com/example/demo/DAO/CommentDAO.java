@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 @Component
 public class CommentDAO {
-    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
-    private String jdbcUsername = "avnadmin";
-    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
+    private String jdbcUsername = "root";
+    private String jdbcPassword = "12345";
 
     private final String ADD_COMMENT= "INSERT INTO comment(parentComment,postId,username,content,time,userId) VALUES(?,?,?,?,NOW(),?)";
     private final String GET_ALL_COMMENT_BY_POSTID="SELECT * FROM comment WHERE postId= ?";
@@ -66,7 +66,6 @@ public class CommentDAO {
             if(rs.next())
             {
                 return rs.getInt("count(*)");
-
             }
             else return 0;
         }

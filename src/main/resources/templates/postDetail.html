@@ -52,7 +52,7 @@
         <div class="post">
             <div class="info">
                 <div class="left">
-                    <img th:src="@{${avatarAuthor}}" alt="Author Image">
+                    <img th:src="@{/image/{filename}(filename=${avatarAuthor})}" alt="Author Image">
                     <div class="author">
                         <div class="name">
                             <p th:text="${nameAuthor}"></p>
@@ -83,7 +83,7 @@
                 </ul>
             </div>
             <div id ='writeComment' class="comment">
-                <img th:src="@{${avatarUser}}" alt="">
+                <img th:src="@{/image/{filename}(filename=${avatarUser})}" alt="">
                 <form action="" id="submitComment">
                     <div  class="comment-content" id ='editor'></div>
                     <button id="upComment" class="btn1" type="submit">Up</button>
@@ -92,7 +92,7 @@
             <ul class="postComment" >
                     <li th:each="comment: ${Comments}" th:if="${comment.getParentComment()}==0">
                         <div class="userCmt">
-                            <img th:src="@{'/file/'+${comment.getUserId()}+'.png'}" alt="">
+                            <img th:src="@{/image/{filename}(filename=${comment.getUserId()}+'.png')}" alt="">
                             <div class="nameUserCmt">
                                 <span th:text="${comment.getUsername()}"></span>
                                 <span th:text="${comment.getTime()}"></span>
@@ -113,7 +113,7 @@
                             <ul >
                                 <li class="rep" th:each="reply:${Comments}" th:if="${reply.getParentComment()}== ${comment.getCommentId()}">
                                     <div class="userReply">
-                                        <img th:src="@{'/file/'+${reply.getUserId()}+'.png'}" alt="">
+                                        <img th:src="@{/image/{filename}(filename=${reply.getUserId()}+'.png')}" alt="">
                                         <div class="nameUserRep">
                                             <span th:text="${reply.getUsername()}"></span>
                                             <span th:text="${reply.getTime()}"></span>

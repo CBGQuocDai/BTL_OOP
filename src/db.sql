@@ -13,10 +13,6 @@ CREATE Table post(
                      title varchar(1024),
                      tags varchar(100),
                      type varchar(10),
-                     countVote int default 0,
-                     countBookmark int default 0,
-                     countComment int default 0,
-                     countView int default 0,
                      content TEXT,
                      time timestamp
 );
@@ -40,9 +36,10 @@ Create Table comment (
 CREATE TABLE user(
                      userId int AUTO_INCREMENT primary key,
                      userName varchar(100),
+                     phone VARCHAR(10),
                      email varchar(100),
                      password varchar(100),
-                     gender int,
+                     gender VARCHAR(10),
                      avatar varchar(255),
                      role varchar(50)
 
@@ -58,16 +55,18 @@ CREATE TABLE notifications (
                                message VARCHAR(1024) NOT NULL,
                                postId INT NOT NULL,
                                userId INT NOT NULL,
-                                state INT DEFAULT 1, -- 1 chưa xem, 0 đã xem
+                               state INT DEFAULT 1, -- 1 chưa xem, 0 đã xem
                                time TIMESTAMP
 );
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(1,'user1','user1@gmail.com','12345',1,'/file/1.png','user');
+values(1,'admin','user1@gmail.com','12345','Male','1.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(2,'user2','user2@gmail.com','12345',1,'/file/2.png','user');
+values(2,'user1','user1@gmail.com','12345','Male','2.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(3,'user3','user3@gmail.com','12345',0,'/file/3.png','user');
+values(3,'user2','user2@gmail.com','12345','Male','3.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(4,'user4','user4@gmail.com','12345',0,'/file/4.png','user');
+values(4,'user3','user3@gmail.com','12345','Female','4.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
-values(5,'user5','user5@gmail.com','12345',1,'/file/5.png','user');
+values(5,'user4','user4@gmail.com','12345','Female','5.png','user');
+insert into user(userId,userName,email,password,gender,avatar,role)
+values(6,'user5','user5@gmail.com','12345','Male','6.png','user');

@@ -102,19 +102,20 @@ package com.example.demo.Controller.User;
 import com.example.demo.DAO.NotificationDAO;
 import com.example.demo.DAO.PostDAO;
 import com.example.demo.DAO.UserDAO;
+import com.example.demo.Model.FileUpload;
 import com.example.demo.Model.Post;
 import com.example.demo.Model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -129,7 +130,7 @@ public class MyProfileController {
     private final UserDAO userDAO;
     private final PostDAO postDAO;
     private final NotificationDAO notificationDAO;
-    private final String UPLOAD_DIR = "/file";
+    private static final String UPLOAD_DIR = "src/main/resources/static/file/";
     public MyProfileController(UserDAO userDAO, PostDAO postDAO,NotificationDAO notificationDAO) {
         this.userDAO = userDAO;
         this.postDAO = postDAO;
@@ -145,20 +146,23 @@ public class MyProfileController {
         }
         User user = userDAO.getUserByUserId(userId);
         boolean stateNotice= notificationDAO.checkExitNewNotifications(userId);
+        model.addAttribute("avatar",new FileUpload());
         model.addAttribute("stateNotice",stateNotice);
         model.addAttribute("user", user);
         model.addAttribute("userId", userId);
-        model.addAttribute("avatarUser","/file/"+userId+".png");
+        model.addAttribute("avatarUser",user.getAvatar());
         return "userInfo";
     }
 
     @PostMapping("/userInfo")
-    public String updateUserInfo(@ModelAttribute User user, HttpSession session) throws SQLException {
+    public String updateUserInfo(@ModelAttribute("user") User user, HttpSession session) throws SQLException {
         Integer userId = (Integer) session.getAttribute("userId");
+//        System.out.println(user.getUsername());
         if (userId == null) {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         user.setUserId(userId); // Gán userId từ session
+
         userDAO.updateUser(user);
         return "redirect:/My_Profile/userInfo";
     }
@@ -208,7 +212,6 @@ public class MyProfileController {
         model.addAttribute("avatarUser","/file/"+userId+".png");
         return "profile_change_password";
     }
-
     @PostMapping("/ChangePassword")
     public String handlePasswordChange(
             @RequestParam("password") String oldPassword,
@@ -232,29 +235,28 @@ public class MyProfileController {
         }
 
         user.setPassword(newPassword);
-        userDAO.updateUser(user);
+        userDAO.updatePassword(user);
 
         return "redirect:/My_Profile/userInfo?success=Password changed successfully";
     }
     @PostMapping("/changeAvatar")
-    public String updateAvatar(@RequestParam("file") MultipartFile file) {
-        int userId = 2;
+    public String updateAvatar(@ModelAttribute("avatar") FileUpload avatar, HttpSession session) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        MultipartFile file =avatar.getFile();
+        System.out.println(file.getOriginalFilename());
         if (file.isEmpty()) {
             return "redirect:/My_Profile/userInfo?error=File is empty";
         }
-
         try {
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
-            Files.write(path, bytes);
-
-            userDAO.updateAvatar(userId, path.toString());
-        } catch (IOException | SQLException e) {
+            String path =UPLOAD_DIR+String.valueOf(userId)+".png";
+            FileCopyUtils.copy(file.getBytes(),new File(path));
+//            userDAO.updateAvatar(userId,"/file/"+file.getOriginalFilename());
+        } catch (IOException e)  {
             e.printStackTrace();
             return "redirect:/My_Profile/userInfo?error=Could not upload file";
         }
-
         return "redirect:/My_Profile/userInfo?success=Avatar changed successfully";
     }
+
 }
 

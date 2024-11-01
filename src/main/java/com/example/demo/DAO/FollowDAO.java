@@ -6,9 +6,9 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class FollowDAO {
-    private String jdbcURL = "jdbc:mysql://mysql-4bc7aa-quocdaicbg001-d224.c.aivencloud.com:16253/defaultdb";
-    private String jdbcUsername = "avnadmin";
-    private String jdbcPassword = "AVNS_jfijrHh9AlwIpwNz30Z";
+    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
+    private String jdbcUsername = "root";
+    private String jdbcPassword = "12345";
 
     private static int cnt=0;
     private static final String GET_A_FOLLOW="SELECT * FROM follow WHERE userIdSrc=? AND userIdDst=?";

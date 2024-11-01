@@ -8,7 +8,8 @@ public class User {
 
     static int cnt = 0;
     @Id
-    private int userId, gender;
+    private int userId;
+    private String gender;
     @NotEmpty
     private String username, password, email;
     private String avatar, role, phone;
@@ -60,11 +61,11 @@ public class User {
         this.userId = userId;
     }
 
-    public int getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
