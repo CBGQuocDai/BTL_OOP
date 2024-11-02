@@ -26,9 +26,7 @@ public class PostDAO {
     public void deletePostById (String id) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(DELETE_POST);
-
         ps.setString(1 , id);
-
         ps.executeUpdate();
     }
 

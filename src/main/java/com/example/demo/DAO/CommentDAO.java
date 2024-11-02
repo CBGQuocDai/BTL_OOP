@@ -51,7 +51,7 @@ public class CommentDAO {
             cmt.setUsername(rs.getString("username"));
 
             cmt.setContent(rs.getString("content"));
-            cmt.setTime(rs.getTimestamp("timeUp"));
+            cmt.setTime(rs.getTimestamp("time"));
             cmts.add(cmt);
         }
         return cmts;
@@ -120,7 +120,7 @@ public class CommentDAO {
                 cmt.setPostId(rs.getInt("postId"));
                 cmt.setUsername(rs.getString("username"));
                 cmt.setContent(rs.getString("content"));
-                cmt.setTimeUp(rs.getTimestamp("timeUp"));
+                cmt.setTime(rs.getTimestamp("time"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

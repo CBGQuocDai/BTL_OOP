@@ -283,5 +283,4 @@ public class PostController1 {
         postDAO.deletePostById(userId);
         return "redirect:/My_Profile/post";
     }
-
 }
