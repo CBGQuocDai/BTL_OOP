@@ -29,7 +29,8 @@ public class CommentController {
     }
 
     @RequestMapping("/comment-view/{id}")
-    public String CommentView(Model Model){
+    public String CommentView(Model model, @RequestParam("id") int commentId) throws Exception {
+        commentDAO.selectCommentById(commentId);
         return "admin/comment-view";
     }
 }

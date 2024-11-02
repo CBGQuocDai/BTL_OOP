@@ -16,7 +16,7 @@ public class CommentDAO {
     private final String GET_ALL_COMMENT_BY_POSTID="SELECT * FROM comment WHERE postId= ?";
     private final String GET_ALL_COMMENT="SELECT * FROM comment";
     private final String DELETE_COMMENT="DELETE FROM comment WHERE commentId = ?";
-
+    private final String GET_COMMENT_BY_ID="SELECT * FROM comment WHERE commentId= ?";
     private final String COUNT_COMMENT_OF_POST ="SELECT COUNT(*) FROM comment where postId= ?";
     public CommentDAO(){}
     protected Connection getConnection() {
@@ -101,8 +101,30 @@ public class CommentDAO {
             cmt.setContent(rs.getString("content"));
             cmt.setUserId(rs.getInt("userId"));
             cmt.setTime(rs.getTimestamp("time"));
+
             cmts.add(cmt);
         }
         return cmts;
+    }
+
+    public Comment selectCommentById(int id){
+        Comment cmt= new Comment();
+        try {
+            Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(GET_COMMENT_BY_ID);
+            ps.setString(1,String.valueOf(id));
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                cmt.setCommentId(rs.getInt("commentId"));
+                cmt.setParentComment(rs.getInt("parentComment"));
+                cmt.setPostId(rs.getInt("postId"));
+                cmt.setUsername(rs.getString("username"));
+                cmt.setContent(rs.getString("content"));
+                cmt.setTimeUp(rs.getTimestamp("timeUp"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return cmt;
     }
 }

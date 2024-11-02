@@ -26,7 +26,8 @@ public class PostController {
     }
 
     @RequestMapping("/post-view/{id}")
-    public String PostView(Model Model){
+    public String PostView(Model model, @RequestParam("id") int postId) throws Exception {
+        postDAO.selectPostById(postId);
         return "admin/post-view";
     }
 }
