@@ -20,35 +20,38 @@
 </head>
 <body>
     <section>
-        <form action="/signup" method="post">
+        <form id="form" th:action="@{/signup}" th:object="${user}" method="post">
             <h1>Foxgraphy</h1>
             <div class="signup-description">
                 <p>Register account</p>
             </div>
-            <div class="inputbox">
-                <input type="text" id= "fullname" name="fullname" required>
-                <label for="">Fullname</label>
+            <div th:if="${param.error}" style="color: red;">
+                <p th:text="${param.error}">Error message</p>
             </div>
             <div class="inputbox">
-                <input type="text" id= "username" name="username" required>
-                <label for="">Username</label>
+                <input th:field="*{username}" type="text" placeholder="username" id= "username" name="username" required>
+                <label for="username"></label>
             </div>
             <div class="inputbox">
-                <input type="email" id="email" name="email" required>
-                <label for="">Email</label>
-            </div>
-
-            <div class="inputbox">
-                <input type="password" id="password" name="password" required>
-                <label for="">Password</label>
+                <input th:field="*{email}" type="email" placeholder="email" id="email" name="email" required>
+                <label for="email"></label>
             </div>
             <div class="inputbox">
-                <input type="password" id="passwordcon" name="passwordcon" required>
-                <label for="">Confirm Password</label>
+                <input th:field="*{password}" type="password" placeholder="password" id="password" name="password" required>
+                <label for="password"></label>
             </div>
             <div class="inputbox">
-                <input type="text" id="gender" name="gender" required>
-                <label for="">Gender</label>
+                <input type="password" id="passwordcon" placeholder="Confirm password" name="passwordcon" required>
+                <label for="passwordcon"></label>
+                <p id="message" style="color:red"></p>
+            </div>
+            <div class="gender">
+                <label for="gender">Gender</label>
+                <select id="gender" th:field="*{gender}" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
             </div>
             <button id= "submit" type="submit">Sign Up</button>
             <div class="register">
@@ -56,44 +59,27 @@
             </div>
         </form>
     </section>
+    <script>
+        const form =document.getElementById('form');
+        form.addEventListener("submit", function (event) {
+            let password=  document.getElementById('password').value;
+            let passwordConfirm= document.getElementById('passwordCom').value;
+            let email = document.getElementById("email").value;
+            let message= document.getElementById('message')
+            if (passwordConfirm === password){
+                message.textContent = 'Password and Confirm Password do not match!';
+                event.preventDefault();
+                return ;
+            }
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailPattern.test(email)) {
+                message.textContent = "Invalid email format!";
+                event.preventDefault();
+                return;
+            }
+            message.textContent='';
+        });
+
+    </script>
 </body>
 </html>
-
-<script type="text/javascript">
-    const submitButttom = document.getElementById("submit");
-    submitButttom.addEventListener('click',()=>{
-      const fullname = document.getElementById('fullname').value;
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('passwordcon').value;
-      const email = document.getElementById('email').value;
-      const gender = document.getElementById('gender').value;
-      const data ={
-        fullname,
-        username,
-        email,
-        password,
-        gender
-      }
-
-      if(password == confirmPassword){
-        const jsonData = JSON.stringify(data);
-        fetch('/req/signup', {
-          method: 'POST',
-          headers:{
-            'Content-Type': 'application/json'
-          },
-          body: jsonData
-        })
-        .then(response =>{
-          // alert('succesfull');
-          // if(response.status == 200){
-          //   alert('succesfull');
-          // xs}
-        })
-      }
-
-    })
-
-
-</script>

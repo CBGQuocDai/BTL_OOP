@@ -105,7 +105,6 @@
                 <button type="submit">Change</button>
             </form>
             <!--End profile_user  -->
-
         </div>
     </div>
 </div>
@@ -143,7 +142,39 @@
         event.stopPropagation();
     });
 </script>
+<script>
+    const form =document.getElementById('profile-form');
+    form.addEventListener('submit',(event) =>{
+        let email = document.getElementById("email").value;
+        let phone = document.getElementById("phone").value;
+        let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(email)) {
+            alert("email invalid")
+            event.preventDefault();
+            return;
+        }
+        let phonePattern = /^[0-9]{10,15}$/;
+        if (!phonePattern.test(phone)) {
+            alert("Invalid phone number! It should contain 10.");
+            event.preventDefault();
+            return;
+        }
+        console.log("hello")
+    })
 
+</script>
+<script>
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // Lấy thông báo lỗi từ tham số "error"
+    const errorMessage = getQueryParam('error');
+    if(errorMessage){
+        alert(decodeURIComponent(errorMessage));
+    }
+</script>
 </body>
 
 </html>

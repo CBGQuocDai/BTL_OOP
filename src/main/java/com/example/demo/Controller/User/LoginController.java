@@ -1,7 +1,12 @@
 package com.example.demo.Controller.User;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -17,6 +22,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class LoginController {
     private final UserDAO userDAO =new UserDAO();
+    private static final String UPLOAD_DIR = "src/main/resources/static/file/";
     @GetMapping("/login")
     public String login(ModelMap modelMap){
         modelMap.addAttribute("user",new User());
@@ -37,16 +43,39 @@ public class LoginController {
                 }
                 else return "redirect:/admin";
             }
-            else return "redirect:/login";
+            else return "redirect:/login?error=username or password is wrong";
         }
         else{
-            return "redirect:/login";
+            return "redirect:/login/error=username or password is wrong";
         }
 
     }
     @GetMapping("/signup")
-    public String Signup(){
+    public String Signup(ModelMap modelMap){
+
+        modelMap.addAttribute("user",new User());
         return "signup";
     }
+    @PostMapping("/signup")
+    public String handleSignup(@ModelAttribute("user")User user, BindingResult result,HttpSession httpSession) throws SQLException, IOException {
+        boolean check= userDAO.checkUsername(user.getUsername());
+        boolean check1= userDAO.checkEmail(user.getEmail());
+        if(check&check1) {
+            userDAO.addUser(user);
+            User user2= userDAO.getUserByUsername(user.getUsername());
+            int cnt= user2.getUserId();
+            userDAO.updateAvatar(cnt,cnt+".png");
+            Path sourcePath = Path.of(UPLOAD_DIR+"avatar_default.png");  // Đường dẫn file gốc
+            Path destinationPath = Path.of(UPLOAD_DIR+cnt+".png");
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            httpSession.setAttribute("username",user2.getUsername());
+            httpSession.setAttribute("userId",user2.getUserId());
+            return "redirect:/post/latest";
+        }
+        else {
+            System.out.println("Heee");
+            return "redirect:/signup?error=email or username already exists";
+        }
 
+    }
 }

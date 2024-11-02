@@ -4,6 +4,10 @@ import com.example.demo.Model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +19,7 @@ public class UserDAO {
     private String jdbcUsername = "root";
     private String jdbcPassword = "12345";
 
+
     private final String GET_USER_BY_USERNAME = "SELECT * FROM user WHERE username =? ";
     private final String GET_USER_BY_USERID = "SELECT * FROM user WHERE userId =? ";
     private final String GET_ALL_USER = "SELECT * FROM user";
@@ -22,9 +27,7 @@ public class UserDAO {
     private final String UPDATE_USER = "UPDATE user SET username = ?, phone = ?, gender = ?, email = ? WHERE userId = ?";
     private final String UPDATE_AVATAR = "UPDATE user SET avatar = ? WHERE userId = ?";
 
-    public UserDAO() {
-    }
-
+    public UserDAO() {}
     protected Connection getConnection() {
         Connection connection = null;
         try {
@@ -35,16 +38,12 @@ public class UserDAO {
         }
         return connection;
     }
-
     public void deleteUserById(String id) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(DELETE_USER);
-
         ps.setString(1, id);
-
         ps.executeUpdate();
     }
-
     public ArrayList<User> getAll() throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(GET_ALL_USER);
@@ -67,7 +66,6 @@ public class UserDAO {
         }
         return users;
     }
-
     public User getUserByUsername(String name) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(GET_USER_BY_USERNAME);
@@ -86,7 +84,6 @@ public class UserDAO {
         }
         return user;
     }
-
     public User getUserByUserId(int id) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(GET_USER_BY_USERID);
@@ -105,7 +102,6 @@ public class UserDAO {
         }
         return user;
     }
-
     public void updateUser(User user) throws SQLException {
         try (Connection connection = getConnection(); PreparedStatement ps = connection.prepareStatement(UPDATE_USER)) {
             ps.setString(1, user.getUsername());
@@ -124,6 +120,87 @@ public class UserDAO {
             ps.setString(1,user.getPassword());
             ps.setInt(2,user.getUserId());
             ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public boolean checkUsername(String name){
+        try{
+            Connection connection =getConnection();
+            PreparedStatement ps =connection.prepareStatement(GET_USER_BY_USERNAME);
+            ps.setString(1,name);
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()) return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    private static final String CHECK_MAIL="SELECT * FROM user WHERE email=?";
+    public boolean checkEmail(String mail){
+        try{
+            Connection connection =getConnection();
+            PreparedStatement ps =connection.prepareStatement(CHECK_MAIL);
+            ps.setString(1,mail);
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()) return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    private static final String ADD_USER="INSERT INTO user(userName,email,password,gender,role) VALUES(?,?,?,?,'user')";
+    public void addUser(User user){
+        try{
+            Connection connection=getConnection();
+            PreparedStatement ps = connection.prepareStatement(ADD_USER);
+            ps.setString(1,user.getUsername());
+            ps.setString(2,user.getEmail());
+            ps.setString(3,user.getPassword());
+            ps.setString(4,user.getGender());
+            ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void updateAvatar(int userId,String path){
+        try{
+            Connection connection = getConnection();
+            PreparedStatement ps=connection.prepareStatement(UPDATE_AVATAR);
+            ps.setString(1,path);
+            ps.setInt(2,userId);
+            ps.execute();
+            ps.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public boolean checkExitEmail(String mail,int userId){
+        try{
+            Connection connection =getConnection();
+            PreparedStatement ps =connection.prepareStatement(CHECK_MAIL);
+            ps.setString(1,mail);
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()) {
+                int id = rs.getInt("userId");
+                return userId == id;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+    public boolean checkExitUsername(String name,int userId){
+        try{
+            Connection connection= getConnection();
+            PreparedStatement ps =connection.prepareStatement(GET_USER_BY_USERNAME);
+            ps.setString(1,name);
+            ResultSet rs= ps.executeQuery();
+            if(rs.next()){
+                int id = rs.getInt("userId");
+                return userId == id;
+            }
+            else return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

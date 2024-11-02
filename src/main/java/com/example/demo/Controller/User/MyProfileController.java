@@ -162,11 +162,16 @@ public class MyProfileController {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         user.setUserId(userId); // Gán userId từ session
-
-        userDAO.updateUser(user);
-        return "redirect:/My_Profile/userInfo";
+        //check exit mail or username
+        boolean check =userDAO.checkExitEmail(user.getEmail(),user.getUserId()) ;
+        boolean check2 =userDAO.checkExitUsername(user.getUsername(),user.getUserId());
+        if(check&check2){
+            userDAO.updateUser(user);
+        return "redirect:/My_Profile/userInfo";}
+        else {
+            return "redirect:/My_Profile/userInfo?error=username or email already exists";
+        }
     }
-
     @GetMapping("/question")
     public String question(Model model, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");

@@ -1,6 +1,7 @@
 package com.example.demo.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
@@ -9,9 +10,12 @@ public class User {
     static int cnt = 0;
     @Id
     private int userId;
-    private String gender;
+    private String gender,phone;
     @NotEmpty
-    private String username, password, email,phone;
+    private String username, password;
+    @Email
+    private String email;
+
     private String avatar, role;
 
     //thông tin bổ xung
@@ -41,9 +45,7 @@ public class User {
         this.role = role;
     }
 
-    public User() {
-        this.userId = ++cnt;
-    }
+    public User() {}
 
     public int getUserId() {
         return userId;

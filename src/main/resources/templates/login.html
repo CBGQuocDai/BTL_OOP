@@ -25,13 +25,16 @@
         <div class="login-description">
             <p>Login to Foxgraphy</p>
         </div>
-        <div class="inputbox">
-            <input name="username" id="username" type="name" th:field="*{username}" required>
-            <label for="username"class="placeholder">Username</label>
+        <div th:if="${param.error}" style="color: red;">
+            <p th:text="${param.error}">Error message</p>
         </div>
         <div class="inputbox">
-            <input name="password" type="password" id="password" th:field="*{password}" required>
-            <label for="password" class="placeholder">Password</label>
+            <input name="username" placeholder="username" id="username" type="name" th:field="*{username}" required>
+            <label for="username"></label>
+        </div>
+        <div class="inputbox">
+            <input name="password" placeholder="password" type="password" id="password" th:field="*{password}" required>
+            <label for="password"></label>
         </div>
         <button type="submit">Login</button>
         <div class="register">
