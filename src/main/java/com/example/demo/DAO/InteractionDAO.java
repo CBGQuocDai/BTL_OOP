@@ -1,9 +1,11 @@
 package com.example.demo.DAO;
 
 import com.example.demo.Model.Interaction;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 
+@Component
 public class InteractionDAO {
     private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
     private String jdbcUsername = "root";

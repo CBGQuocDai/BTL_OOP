@@ -11,8 +11,8 @@ public class User {
     private int userId;
     private String gender;
     @NotEmpty
-    private String username, password, email;
-    private String avatar, role, phone;
+    private String username, password, email,phone;
+    private String avatar, role;
 
     //thông tin bổ xung
     private int countFollow, countPost;

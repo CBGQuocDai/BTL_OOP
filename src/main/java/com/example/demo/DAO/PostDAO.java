@@ -35,7 +35,7 @@ public class PostDAO {
     private static final String COUNT_POST_OF_USER = "SELECT count(*) FROM post WHERE userId=?";
     private static final String GET_ALL_POST_FOLLOW ="SELECT * FROM post JOIN follow ON post.userId = follow.userIdDst AND follow.userIdSrc=? AND post.type=? ORDER BY post.postId DESC";
     private static final String GET_ALL_POST_BOOKMARK ="SELECT * FROM post JOIN interaction ON post.postId = interaction.postId AND interaction.userId=?  AND post.type=? AND interaction.type='bookmark' ORDER BY post.postId DESC";
-    private static final String SEARCH = "SELECT * FROM post WHERE title LIKE ? AND tags LIKE ? ORDER By postId DESC";
+    private static final String SEARCH = "SELECT * FROM post WHERE lower(title) LIKE ? OR lower(tags) LIKE ? ORDER By postId DESC";
     private static final String UPDATE= "UPDATE post SET title = ?,tags=?,type=?,content=? WHERE postId=?";
     public PostDAO(){}
     protected Connection getConnection() {
@@ -229,6 +229,7 @@ public class PostDAO {
         return posts;
     }
     public List<Post> search(String key){
+        key= key.toLowerCase();
         key = "%"+key+"%";
         List<Post> ans = new ArrayList<>();
         try {

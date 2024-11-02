@@ -177,7 +177,7 @@ public class MyProfileController {
         List<Post> questions = postDAO.getQuestionsByUserId(userId);
         model.addAttribute("posts", questions);
         model.addAttribute("userId", userId);
-        model.addAttribute("avatarUser","/file/"+userId+".png");
+        model.addAttribute("avatarUser",userId+".png");
         boolean stateNotice= notificationDAO.checkExitNewNotifications(userId);
         model.addAttribute("stateNotice",stateNotice);
         return "profile_question";
@@ -194,7 +194,7 @@ public class MyProfileController {
         model.addAttribute("stateNotice",stateNotice);
         model.addAttribute("posts", posts);
         model.addAttribute("userId", userId);
-        model.addAttribute("avatarUser","/file/"+userId+".png");
+        model.addAttribute("avatarUser",userId+".png");
         return "profile_post";
     }
 
@@ -209,7 +209,7 @@ public class MyProfileController {
         model.addAttribute("stateNotice",stateNotice);
         model.addAttribute("user", user);
         model.addAttribute("userId", userId);
-        model.addAttribute("avatarUser","/file/"+userId+".png");
+        model.addAttribute("avatarUser",userId+".png");
         return "profile_change_password";
     }
     @PostMapping("/ChangePassword")

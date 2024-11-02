@@ -1,10 +1,12 @@
 package com.example.demo.DAO;
 
 import com.example.demo.Model.Follow;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 
+@Component
 public class FollowDAO {
     private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
     private String jdbcUsername = "root";
