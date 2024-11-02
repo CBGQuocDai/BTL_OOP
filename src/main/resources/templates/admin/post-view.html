@@ -28,29 +28,15 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
-
-      <!-- Default box -->
-      <div class="col-xs-12">
-        <div class="box-body">
-          <table class="table">
-              <thead>
-                  <tr>
-                      <th>Contents</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                    <td class="content" th:text="${post.getContent()}"></td>
-                  </tr>
-              </tbody>
-          </table>
-        </div>
-        <!-- /.box -->
+    <head>
+      <title>Contents</title>
+    </head>
+    <body>
+      <div class="content">
+          <h1 th:text="${post.title}">Post Title</h1>
+          <p th:text="${post.content}">Post content goes here...</p>
       </div>
-      <!-- /.box -->
-
-    </section>
+    </body>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->

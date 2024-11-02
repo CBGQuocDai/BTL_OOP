@@ -30,7 +30,7 @@ public class CommentController {
 
     @RequestMapping("/comment-view/{id}")
     public String CommentView(Model model, @RequestParam("id") int commentId) throws Exception {
-        commentDAO.selectCommentById(commentId);
+        model.addAttribute("comment", commentDAO.selectCommentById(commentId));
         return "admin/comment-view";
     }
 }

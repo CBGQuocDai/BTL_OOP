@@ -28,34 +28,14 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
-
-      <!-- Default box -->
-      <div class="col-xs-12">
-        <div class="box">
-        <!-- /.box-header -->
-
-          <div class="box-body table-responsive no-padding">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Comment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td class="contentCmt" th:text="${comment.getContent()}"> </td> <!-- Comment Content -->
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-          <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
+    <head>
+      <title>Comment</title>
+    </head>
+    <body>
+      <div class="content">
+          <p th:text="${comment.content}">content goes here...</p>
       </div>
-      <!-- /.box -->
-
-    </section>
+    </body>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->

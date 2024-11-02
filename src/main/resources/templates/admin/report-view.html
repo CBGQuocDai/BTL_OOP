@@ -28,29 +28,14 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
-
-      <!-- Default box -->
-      <div class="col-xs-12">
-        <div class="box-body">
-          <table class="table">
-              <thead>
-                  <tr>
-                      <th>Contents</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td class="content" th:text="${report.content()}"></td>
-                  </tr>
-              </tbody>
-          </table>
-        </div>
-        <!-- /.box -->
+    <head>
+      <title>Content</title>
+    </head>
+    <body>
+      <div class="content">
+          <p th:text="${report.content}">content goes here...</p>
       </div>
-      <!-- /.box -->
-
-    </section>
+    </body>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
