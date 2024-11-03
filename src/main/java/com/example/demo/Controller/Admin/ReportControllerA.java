@@ -3,6 +3,7 @@ package com.example.demo.Controller.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,8 +27,8 @@ public class ReportControllerA {
     }
 
     @RequestMapping("/report-view/{id}")
-    public String ReportView(Model model, @RequestParam("id") int reportId) throws Exception {
-        reportDAO.selectReportById(reportId);
+    public String ReportView(Model model, @PathVariable("id") int reportId) throws Exception {
+        model.addAttribute("report", reportDAO.selectReportById(reportId));
         return "admin/report-view";
     }
 }

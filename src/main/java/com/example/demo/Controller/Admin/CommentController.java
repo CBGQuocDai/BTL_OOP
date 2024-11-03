@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,7 +15,7 @@ import com.example.demo.DAO.CommentDAO;
 public class CommentController {
 
     @Autowired
-    private CommentDAO commentDAO;
+    CommentDAO commentDAO;
 
     @RequestMapping("/admin_comment")
     public String Post(Model model) throws SQLException {
@@ -29,8 +30,8 @@ public class CommentController {
     }
 
     @RequestMapping("/comment-view/{id}")
-    public String CommentView(Model model, @RequestParam("id") int commentId) throws Exception {
-        commentDAO.selectCommentById(commentId);
+    public String CommentView(Model model, @PathVariable("id") int commentId) throws Exception {
+        model.addAttribute("comment", commentDAO.selectCommentById(commentId));
         return "admin/comment-view";
     }
 }

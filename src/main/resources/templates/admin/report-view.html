@@ -1,63 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{admin/fragments/head :: head}"></head>
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
 
- <div th:replace="~{admin/fragments/header :: header}"></div>
-  <!-- =============================================== -->
+    <div th:replace="~{admin/fragments/header :: header}"></div>
+    <!-- =============================================== -->
 
-  <!-- Left side column. contains the sidebar -->
-  <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
-  <!-- =============================================== -->
+    <!-- Left side column. contains the sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <!-- =============================================== -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Manage Reports
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Manage Reports
 
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Admin</a></li>
-        <li class="active">Reports</li>
-      </ol>
-    </section>
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Admin</a></li>
+                <li class="active">Reports</li>
+            </ol>
+        </section>
 
-    <!-- Main content -->
-    <section class="content">
-
-      <!-- Default box -->
-      <div class="col-xs-12">
-        <div class="box-body">
-          <table class="table">
-              <thead>
-                  <tr>
-                      <th>Contents</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td class="content" th:text="${report.content()}"></td>
-                  </tr>
-              </tbody>
-          </table>
+        <!-- Main content -->
+        <head>
+            <title>Content</title>
+        </head>
+        <body>
+        <div class="content">
+            <p th:text="${report.content}">content goes here...</p>
         </div>
-        <!-- /.box -->
-      </div>
-      <!-- /.box -->
+        </body>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
 
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+    <footer class="main-footer">
 
-  <footer class="main-footer">
-    
-  </footer>
+    </footer>
 
 </div>
 <!-- ./wrapper -->

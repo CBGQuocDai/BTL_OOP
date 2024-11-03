@@ -1,6 +1,5 @@
 package com.example.demo.Controller.Admin;
 
-import com.example.demo.Model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,11 +27,9 @@ public class PostController {
         return "redirect:/admin_post";
     }
 
-    @GetMapping(value = "/post-view/{id}")
-    public String PostView(Model model, @PathVariable int id) throws Exception {
-        Post post= postDAO.getPostById(id);
-        System.out.println(post.getTitle());
-        model.addAttribute("post",post);
+    @GetMapping("/post-view/{id}")
+    public String PostView(Model model, @PathVariable("id") int postId) throws Exception {
+        model.addAttribute("post", postDAO.getPostById(postId));
         return "admin/post-view";
     }
 }

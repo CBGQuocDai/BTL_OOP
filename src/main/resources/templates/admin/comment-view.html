@@ -1,68 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{admin/fragments/head :: head}"></head>
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
 
- <div th:replace="~{admin/fragments/header :: header}"></div>
-  <!-- =============================================== -->
+    <div th:replace="~{admin/fragments/header :: header}"></div>
+    <!-- =============================================== -->
 
-  <!-- Left side column. contains the sidebar -->
-  <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
-  <!-- =============================================== -->
+    <!-- Left side column. contains the sidebar -->
+    <div th:replace="~{admin/fragments/sidebar :: sidebar}"></div>
+    <!-- =============================================== -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Manage Comments
-       
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Admin</a></li>
-        <li class="active">Comments</li>
-      </ol>
-    </section>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Manage Comments
 
-    <!-- Main content -->
-    <section class="content">
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Admin</a></li>
+                <li class="active">Comments</li>
+            </ol>
+        </section>
 
-      <!-- Default box -->
-      <div class="col-xs-12">
-        <div class="box">
-        <!-- /.box-header -->
-
-          <div class="box-body table-responsive no-padding">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Comment</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <td class="contentCmt" th:text="${comment.getContent()}"> </td> <!-- Comment Content -->
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-          <!-- /.box-body -->
+        <!-- Main content -->
+        <head>
+            <title>Comment</title>
+        </head>
+        <body>
+        <div class="content">
+            <p th:text="${comment.content}">content goes here...</p>
         </div>
-        <!-- /.box -->
-      </div>
-      <!-- /.box -->
+        </body>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
 
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+    <footer class="main-footer">
 
-  <footer class="main-footer">
-    
-  </footer>
+    </footer>
 
 </div>
 <!-- ./wrapper -->
