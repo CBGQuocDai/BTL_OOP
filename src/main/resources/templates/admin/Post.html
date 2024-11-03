@@ -74,7 +74,8 @@
                 <!-- <td th:text="${post.content.length() > 100 ? post.content.substring(0, 100) + '...' : post.content}"> Content </td> Content (truncated) -->
                 <td th:text="${post.timeUp}">Time Uploaded</td> <!-- Time Uploaded -->
                 <td>
-                  <a th:href="@{/post-view/{id}(id=${post.postId})}" class="btn btn-success">View</a> <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Delete</a>
+                  <a th:href="@{/post-view/{id}(id=${post.postId})}" class="btn btn-success">View</a>
+                  <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         </tbody>

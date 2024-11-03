@@ -1,5 +1,7 @@
 package com.example.demo.Controller.Admin;
 
+import java.sql.SQLException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,7 @@ public class AdminController {
     UserDAO userDAO;
 
     @RequestMapping("/admin")
-    public String admin(Model model) throws Exception {
+    public String admin(Model model) throws SQLException {
         model.addAttribute("users" , userDAO.getAll());
         return "admin/admin";
     }
