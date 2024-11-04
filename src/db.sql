@@ -4,7 +4,9 @@ CREATE Table report(
                        commentId int,
                        reason VARCHAR(255),
                        content VARCHAR(255),
-                       time timestamp
+                       time timestamp,
+                       FOREIGN KEY (postId) REFERENCES post(postId) ON DELETE cascade,
+                       FOREIGN KEY (commentId) REFERENCES comment(commentId) ON DELETE cascade
 );
 CREATE Table post(
                      postId int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -14,7 +16,8 @@ CREATE Table post(
                      tags varchar(100),
                      type varchar(10),
                      content TEXT,
-                     time timestamp
+                     time timestamp,
+                     FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE cascade
 );
 CREATE Table interaction(
                             interactionId int AUTO_INCREMENT primary key,
@@ -22,7 +25,9 @@ CREATE Table interaction(
                             postId int,
                             commentId int,
                             Type varchar(255),
-                            time timestamp
+                            time timestamp,
+                            FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE cascade,
+                            FOREIGN KEY (postId) REFERENCES post(postId) ON DELETE cascade
 );
 Create Table comment (
                          commentId int AUTO_INCREMENT primary key,
@@ -31,11 +36,13 @@ Create Table comment (
                          username VARCHAR(50),
                          userId int,
                          content text,
-                         time timestamp
+                         time timestamp,
+                         FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE cascade,
+                         FOREIGN KEY (postId) REFERENCES post(postId) ON DELETE cascade
 );
 CREATE TABLE user(
                      userId int AUTO_INCREMENT primary key,
-                     userName varchar(100),
+                     userName varchar(100) unique,
                      phone VARCHAR(10),
                      email varchar(100),
                      password varchar(100),
@@ -48,7 +55,9 @@ CREATE Table follow(
                        followId int AUTO_INCREMENT primary key,
                        userIdSrc int, -- người đi follow
                        userIdDst int, -- người được follow
-                       time timestamp
+                       time timestamp,
+                       FOREIGN KEY (userIdSrc) REFERENCES user(userId) ON DELETE cascade,
+                       FOREIGN KEY (userIdDst) REFERENCES user(userId) ON DELETE cascade
 );
 CREATE TABLE notifications (
                                id INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,7 +65,9 @@ CREATE TABLE notifications (
                                postId INT NOT NULL,
                                userId INT NOT NULL,
                                state INT DEFAULT 1, -- 1 chưa xem, 0 đã xem
-                               time TIMESTAMP
+                               time TIMESTAMP,
+                               FOREIGN KEY (userId) REFERENCES user(userId) ON DELETE cascade,
+                               FOREIGN KEY (postId) REFERENCES post(postId) ON DELETE cascade
 );
 insert into user(userId,userName,email,password,gender,avatar,role)
 values(1,'admin','user1@gmail.com','12345','Male','1.png','user');
