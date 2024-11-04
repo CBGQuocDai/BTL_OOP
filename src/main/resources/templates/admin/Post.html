@@ -13,12 +13,11 @@
   <!-- =============================================== -->
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" >
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
         Manage Posts
-       
       </h1>
       <ol class="breadcrumb">
         <li><a href="#">Home</a></li>
@@ -28,25 +27,25 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content" style="background-color: white;overflow: scroll" >
 
       <!-- Default box -->
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header">
             <div class="box-tools">
-              <div class="input-group input-group-sm" style="width: 150px;">
-                <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+              <form action="/admin_post/search" method="get" class="input-group input-group-sm" style="width: 150px;">
+                <input type="text" name="table_search" id="search" class="form-control pull-right" placeholder="Search">
 
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
           <!-- /.box-header -->
           <div class="box-body table-responsive no-padding">
-    <table class="table table-hover">
+    <table class="table table-hover" style="overflow: hidden">
         <thead>
             <tr>
                 <th>STT</th> <!-- Index for row number -->
@@ -70,7 +69,7 @@
                 <td th:text="${post.tags}">Tags</td> <!-- Tags -->
                 <td th:text="${post.type}">Type</td> <!-- Type -->
                 <!-- <td th:text="${post.content.length() > 100 ? post.content.substring(0, 100) + '...' : post.content}"> Content </td> Content (truncated) -->
-                <td th:text="${post.time}">Time Uploaded</td> <!-- Time Uploaded -->
+                <td th:text="${post.getTime()}">Time Uploaded</td> <!-- Time Uploaded -->
                 <td>
                   <a th:href="@{/post-view/{id}(id=${post.postId})}" class="btn btn-success">View</a> <a th:href="@{/delete-post(id=${post.postId})}" class="btn btn-danger">Delete</a>
                 </td>
@@ -99,5 +98,18 @@
 
 <!-- jQuery 3 -->
 <div th:replace="~{admin/fragments/script :: script}"></div>
+<script>
+    const search = document.getElementById("search");
+    console.log(search.value)
+    search.addEventListener('keydown', (event) =>{
+        if(event.key=== "Enter"){
+            let keyword =search.value;
+            console.log("hello world",keyword)
+            if(keyword) {
+                fetch(`/admin_post/search?table_search=${encodeURIComponent(keyword)}`)
+            }
+        }
+    })
+</script>
 </body>
 </html>

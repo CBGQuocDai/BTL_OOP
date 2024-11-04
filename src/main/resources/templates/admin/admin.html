@@ -28,7 +28,7 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+      <section class="content" style="background-color: white;overflow: scroll">
 
       <!-- Default box -->
       <div class="col-xs-12">
@@ -51,7 +51,7 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody >
             <!-- Loop through the list of users -->
             <tr th:each="user : ${users}">
                 <td th:text="${user.username}">Username</td>

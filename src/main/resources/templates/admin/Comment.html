@@ -28,7 +28,7 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+      <section class="content" style="background-color: white;overflow: scroll">
 
       <!-- Default box -->
       <div class="col-xs-12">
@@ -37,19 +37,19 @@
 
             
             <div class="box-tools">
-              <div class="input-group input-group-sm" style="width: 150px;">
-                <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
+              <form action="/admin_comment/search" method="get" class="input-group input-group-sm" style="width: 150px;">
+                <input type="text" name="table_search" id="search" class="form-control pull-right" placeholder="Search">
 
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
           <!-- /.box-header -->
 
           <div class="box-body table-responsive no-padding">
-    <table class="table table-hover">
+    <table class="table table-hover" style="overflow: hidden">
         <thead>
             <tr>
                 <th>Comment ID</th> <!-- commentId -->
@@ -61,7 +61,7 @@
                 <th>Action</th> <!-- Edit/Delete actions -->
             </tr>
         </thead>
-        <tbody>
+        <tbody style="overflow: scroll">
             <!-- Iterate over the list of comments -->
             <tr th:each="comment : ${comments}">
                 <td th:text="${comment.commentId}">Comment ID</td> <!-- Comment ID -->
@@ -102,5 +102,18 @@
 
 <!-- jQuery 3 -->
 <div th:replace="~{admin/fragments/script :: script}"></div>
+<script>
+    const search = document.getElementById("search");
+    console.log(search.value)
+    search.addEventListener('keydown', (event) =>{
+        if(event.key=== "Enter"){
+            let keyword =search.value;
+            console.log("hello world",keyword)
+            if(keyword) {
+                fetch(`/admin_comment/search?table_search=${encodeURIComponent(keyword)}`)
+            }
+        }
+    })
+</script>
 </body>
 </html>
