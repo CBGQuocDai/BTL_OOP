@@ -44,6 +44,11 @@ public class NotificationController {
     }
     @GetMapping("/notifications/{userId}")
     public String getNotifications(@PathVariable("userId") String userId, ModelMap modelMap, HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
+        if( Integer.parseInt(userId)!= id) return "Error";
         List<Notification> notifications = notificationDAO.findByUserId(Integer.parseInt(userId));
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         modelMap.addAttribute("notifications", notifications);

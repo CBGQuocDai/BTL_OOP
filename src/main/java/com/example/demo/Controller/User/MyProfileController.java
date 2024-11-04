@@ -157,7 +157,6 @@ public class MyProfileController {
     @PostMapping("/userInfo")
     public String updateUserInfo(@ModelAttribute("user") User user, HttpSession session) throws SQLException {
         Integer userId = (Integer) session.getAttribute("userId");
-//        System.out.println(user.getUsername());
         if (userId == null) {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }

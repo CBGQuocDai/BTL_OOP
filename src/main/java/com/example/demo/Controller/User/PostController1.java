@@ -39,8 +39,20 @@ public class PostController1 {
     private Post pre_post=new Post();
     @Autowired
     private NotificationDAO notificationDAO;
+    @GetMapping("/")
+    public String home(HttpSession httpSession){
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
+        return "redirect:/post/latest";
+    }
     @GetMapping("/post/latest")
     public String allPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         List<Post> posts= postDAO.getAllPost1();
         for(Post post:posts){
@@ -60,6 +72,10 @@ public class PostController1 {
     }
     @GetMapping("/post/follow")
     public String followPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         List<Post> posts= postDAO.getAllFollow(user.getUserId(),"post");
         for(Post post:posts){
@@ -79,6 +95,10 @@ public class PostController1 {
     }
     @GetMapping("/post/bookmark")
     public String bookmarkPost(ModelMap modelMap,HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         List<Post> posts= postDAO.getAllBookmark(user.getUserId(),"post");
         for(Post post:posts){
@@ -98,6 +118,10 @@ public class PostController1 {
     }
     @GetMapping("/question/latest")
     public String allQuestion(ModelMap modelMap,HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         List<Post> posts= postDAO.getAllQuestion();
         for(Post post:posts){
@@ -117,6 +141,10 @@ public class PostController1 {
     }
     @GetMapping("/question/follow")
     public String followQuestion(ModelMap modelMap,HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         List<Post> posts= postDAO.getAllFollow(user.getUserId(),"question");
         for(Post post:posts){
@@ -136,6 +164,10 @@ public class PostController1 {
     }
     @GetMapping("/question/bookmark")
     public String bookmarkQuestion(ModelMap modelMap,HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         List<Post> posts= postDAO.getAllBookmark(user.getUserId(),"question");
         for(Post post:posts){
@@ -156,6 +188,10 @@ public class PostController1 {
 
     @GetMapping("/create")
     public String create(ModelMap modelMap, HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         post=pre_post;
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
@@ -211,6 +247,10 @@ public class PostController1 {
     }
     @GetMapping("/{id}")
     public String postDetail(ModelMap modelMap, @PathVariable int id, HttpSession httpSession) throws SQLException,NumberFormatException{
+        Integer idx = (Integer) httpSession.getAttribute("userId");
+        if (idx == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         post = postDAO.getPostById(id);
         post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         post.setCountView(interactionDAO.countView(post.getPostId()));
@@ -254,6 +294,10 @@ public class PostController1 {
 
     @GetMapping("/search")
     public String search(@RequestParam("keyword") String key, ModelMap modelMap, HttpSession httpSession) throws SQLException {
+        Integer id = (Integer) httpSession.getAttribute("userId");
+        if (id == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         List<Post> posts= postDAO.search(key);
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
@@ -266,6 +310,10 @@ public class PostController1 {
 
     @GetMapping("/edit/{id}")
     public String edit(ModelMap modelMap, @PathVariable int id,HttpSession httpSession) throws SQLException {
+        Integer idd = (Integer) httpSession.getAttribute("userId");
+        if (idd == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         Post post = postDAO.getPostById(id);
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());

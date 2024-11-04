@@ -33,6 +33,10 @@ public class UserController {
     private CommentDAO commentDAO;
     @GetMapping("/user/{id}/post")
     public String user_post(ModelMap modelMap, @PathVariable int id, HttpSession httpSession) throws SQLException {
+        Integer idd = (Integer) httpSession.getAttribute("userId");
+        if (idd == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user2=  userDAO.getUserByUserId(id);
         user2.setCountFollow(followDAO.countFollow(user2.getUserId()));
         User user= userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
@@ -54,6 +58,10 @@ public class UserController {
     }
     @GetMapping("user/{id}/question")
     public String user_question(ModelMap modelMap, @PathVariable int id, HttpSession httpSession) throws SQLException {
+        Integer idd = (Integer) httpSession.getAttribute("userId");
+        if (idd == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user2=  userDAO.getUserByUserId(id);
         user2.setCountFollow(followDAO.countFollow(user2.getUserId()));
         User user= userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
@@ -75,6 +83,10 @@ public class UserController {
     }
     @GetMapping("user/{id}/contact")
     public String user_contact(ModelMap modelMap, @PathVariable int id, HttpSession httpSession) throws SQLException {
+        Integer idd = (Integer) httpSession.getAttribute("userId");
+        if (idd == null) {
+            return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
+        }
         User user2=  userDAO.getUserByUserId(id);
         user2.setCountFollow(followDAO.countFollow(user2.getUserId()));
         User user= userDAO.getUserByUsername((String) httpSession.getAttribute("username"));

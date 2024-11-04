@@ -18,11 +18,13 @@
             padding:0;
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/404.css}">
 </head>
 <body>
-    <div style="width: 100vw;height: 100vh; display: flex;align-items: center;justify-content: center">
-        <h1 style="color:red">Something was wrong</h1>
-        <a th:href="@{/post/latest}" > Return home page</a>
-    </div>
+
+<div class="main"  >
+    <img th:src="@{/file/404.png}" alt="">
+    <h1>PAGE NOT FOUND</h1>
+</div>
 </body>
 </html>

@@ -1,5 +1,9 @@
 server:
   port: 8080
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,7 +16,6 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: update
     show-sql: true
-
 logging:
   level:
     org.hibernate.SQL: DEBUG
