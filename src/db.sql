@@ -81,3 +81,5 @@ insert into user(userId,userName,email,password,gender,avatar,role)
 values(5,'user4','user4@gmail.com','12345','Female','5.png','user');
 insert into user(userId,userName,email,password,gender,avatar,role)
 values(6,'user5','user5@gmail.com','12345','Male','6.png','user');
+
+

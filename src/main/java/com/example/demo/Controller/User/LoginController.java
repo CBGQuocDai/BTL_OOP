@@ -3,10 +3,12 @@ package com.example.demo.Controller.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 
 import jakarta.validation.Valid;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -22,7 +24,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class LoginController {
     private final UserDAO userDAO =new UserDAO();
-    private static final String UPLOAD_DIR = "src/main/resources/static/file/";
+    private static final String UPLOAD_DIR = "static/file/";
     @GetMapping("/login")
     public String login(ModelMap modelMap){
         modelMap.addAttribute("user",new User());
@@ -34,7 +36,7 @@ public class LoginController {
         boolean missingPassword =result.hasFieldErrors("password");
         if(!missingPassword && !missingUsername){
             User user= userDAO.getUserByUsername(userC.getUsername());
-            if(user.getUsername()== null) return "redirect:/login";
+            if(user.getUsername()== null) return "redirect:/login?error=username or password is wrong";
             if( user.getPassword().equals(userC.getPassword())){
                 if(user.getRole().equals("user")){
                     httpSession.setAttribute("username",user.getUsername());
@@ -65,9 +67,20 @@ public class LoginController {
             User user2= userDAO.getUserByUsername(user.getUsername());
             int cnt= user2.getUserId();
             userDAO.updateAvatar(cnt,cnt+".png");
-            Path sourcePath = Path.of(UPLOAD_DIR+"avatar_default.png");  // Đường dẫn file gốc
-            Path destinationPath = Path.of(UPLOAD_DIR+cnt+".png");
-            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            ClassPathResource resource = new ClassPathResource("static/file/avatar_default.png");
+            Path sourcePath= Path.of(resource.getURI());
+            Path destinationPath = Paths.get("uploads/"+cnt+".png");
+            try{
+                if (!Files.exists(destinationPath.getParent())) {
+                    Files.createDirectories(destinationPath.getParent());
+                }
+                Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            catch (IOException e) { e.printStackTrace(); }
+
+            //
+
+            //
             httpSession.setAttribute("username",user2.getUsername());
             httpSession.setAttribute("userId",user2.getUserId());
             return "redirect:/post/latest";

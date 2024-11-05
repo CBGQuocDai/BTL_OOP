@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 @Component
 public class CommentDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
+    private String jdbcURL = "";
+    private String jdbcUsername = "";
+    private String jdbcPassword = "";
 
     private final String ADD_COMMENT= "INSERT INTO comment(parentComment,postId,username,content,time,userId) VALUES(?,?,?,?,NOW(),?)";
     private final String GET_ALL_COMMENT_BY_POSTID="SELECT * FROM comment WHERE postId= ?";

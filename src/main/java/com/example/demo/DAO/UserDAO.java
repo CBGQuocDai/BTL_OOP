@@ -15,10 +15,9 @@ import java.util.Optional;
 
 @Component
 public class UserDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
-
+    private String jdbcURL = "";
+    private String jdbcUsername = "";
+    private String jdbcPassword = "";
 
     private final String GET_USER_BY_USERNAME = "SELECT * FROM user WHERE username =? ";
     private final String GET_USER_BY_USERID = "SELECT * FROM user WHERE userId =? ";
@@ -206,3 +205,4 @@ public class UserDAO {
         }
     }
 }
+

@@ -17,9 +17,9 @@ import com.example.demo.Model.Report;
 
 @Component
 public class ReportDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
+    private String jdbcURL = "";
+    private String jdbcUsername = "";
+    private String jdbcPassword = "";
 
 
     private static final String GET_ALL_REPORT= "SELECT * FROM report";
@@ -30,9 +30,7 @@ public class ReportDAO {
     public void deleteReportById (String id) throws SQLException {
         Connection connection = getConnection();
         PreparedStatement ps = connection.prepareStatement(DELETE_REPORT);
-
         ps.setString(1 , id);
-
         ps.executeUpdate();
     }
 
@@ -75,7 +73,7 @@ public class ReportDAO {
     public void addReport(Report r) throws SQLException {
         Connection connection= getConnection();
         PreparedStatement ps = connection.prepareStatement(ADD_REPORT);
-
+        System.out.println(" fhhhh sf reason");
         ps.setString(1,String.valueOf(r.getPostId()));
         ps.setString(2,String.valueOf(r.getCommentId()));
         ps.setString(3,r.getReason());

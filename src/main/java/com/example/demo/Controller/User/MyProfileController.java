@@ -107,6 +107,7 @@ import com.example.demo.Model.Post;
 import com.example.demo.Model.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -117,6 +118,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -130,7 +132,7 @@ public class MyProfileController {
     private final UserDAO userDAO;
     private final PostDAO postDAO;
     private final NotificationDAO notificationDAO;
-    private static final String UPLOAD_DIR = "src/main/resources/static/file/";
+    private static final String UPLOAD_DIR="static/file/";
     public MyProfileController(UserDAO userDAO, PostDAO postDAO,NotificationDAO notificationDAO) {
         this.userDAO = userDAO;
         this.postDAO = postDAO;
@@ -247,13 +249,13 @@ public class MyProfileController {
     public String updateAvatar(@ModelAttribute("avatar") FileUpload avatar, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
         MultipartFile file =avatar.getFile();
-        System.out.println(file.getOriginalFilename());
         if (file.isEmpty()) {
             return "redirect:/My_Profile/userInfo?error=File is empty";
         }
         try {
-            String path =UPLOAD_DIR+String.valueOf(userId)+".png";
+            String path = "uploads/"+userId+".png";
             FileCopyUtils.copy(file.getBytes(),new File(path));
+
 //            userDAO.updateAvatar(userId,"/file/"+file.getOriginalFilename());
         } catch (IOException e)  {
             e.printStackTrace();

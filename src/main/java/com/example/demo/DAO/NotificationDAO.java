@@ -9,9 +9,9 @@ import java.util.List;
 
 @Component
 public class NotificationDAO {
-    private String jdbcURL = "jdbc:mysql://localhost:3306/BlogDB";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "12345";
+    private String jdbcURL = "";
+    private String jdbcUsername = "";
+    private String jdbcPassword = "";
 
     private static final String SAVE_NOTICE = "INSERT INTO notifications (message, postId, userId, time) VALUES (?, ?, ?, NOW())";
     private static final String GET_ALL_NOTICE = "SELECT * FROM notifications WHERE userId = ? ORDER BY id DESC";

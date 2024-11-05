@@ -14,7 +14,6 @@ public class ReportController {
     private final ReportDAO reportDAO =new ReportDAO();
     @PostMapping("/sendReport")
     public String addReport(@RequestBody Report report) throws SQLException {
-        report.setReportId(++cnt);
         reportDAO.addReport(report);
         return "done";
     }
