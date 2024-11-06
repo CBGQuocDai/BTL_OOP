@@ -1,7 +1,5 @@
 package com.example.demo.Controller.User;
-import com.example.demo.DAO.NotificationDAO;
-import com.example.demo.DAO.PostDAO;
-import com.example.demo.DAO.UserDAO;
+import com.example.demo.DAO.*;
 import com.example.demo.Model.FileUpload;
 import com.example.demo.Model.Post;
 import com.example.demo.Model.User;
@@ -19,17 +17,22 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+
 @Controller
 @RequestMapping("/My_Profile")
 public class MyProfileController {
     private final UserDAO userDAO;
     private final PostDAO postDAO;
     private final NotificationDAO notificationDAO;
+    private final InteractionDAO interactionDAO;
+    private final CommentDAO commentDAO;
     private static final String UPLOAD_DIR="static/file/";
-    public MyProfileController(UserDAO userDAO, PostDAO postDAO,NotificationDAO notificationDAO) {
+    public MyProfileController(UserDAO userDAO, PostDAO postDAO, NotificationDAO notificationDAO, InteractionDAO interactionDAO,CommentDAO commentDAO) {
         this.userDAO = userDAO;
         this.postDAO = postDAO;
         this.notificationDAO=notificationDAO;
+        this.interactionDAO=interactionDAO;
+        this.commentDAO=commentDAO;
     }
 
     @GetMapping("/userInfo")
@@ -67,13 +70,18 @@ public class MyProfileController {
         }
     }
     @GetMapping("/question")
-    public String question(Model model, HttpSession session) {
+    public String question(Model model, HttpSession session) throws SQLException {
         Integer userId = (Integer) session.getAttribute("userId");
 
         if (userId == null) {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         List<Post> questions = postDAO.getQuestionsByUserId(userId);
+        for(Post post:questions){
+            post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
+            post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
+            post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
+        }
         model.addAttribute("posts", questions);
         model.addAttribute("userId", userId);
         model.addAttribute("avatarUser",userId+".png");
@@ -81,14 +89,18 @@ public class MyProfileController {
         model.addAttribute("stateNotice",stateNotice);
         return "profile_question";
     }
-
     @GetMapping("/post")
-    public String postIndex(Model model, HttpSession session) {
+    public String postIndex(Model model, HttpSession session) throws SQLException {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         List<Post> posts = postDAO.getPostsByUserId(userId);
+        for(Post post:posts){
+            post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
+            post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
+            post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
+        }
         boolean stateNotice= notificationDAO.checkExitNewNotifications(userId);
         model.addAttribute("stateNotice",stateNotice);
         model.addAttribute("posts", posts);

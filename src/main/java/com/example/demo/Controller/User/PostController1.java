@@ -299,6 +299,11 @@ public class PostController1 {
             return "redirect:/login"; // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
         }
         List<Post> posts= postDAO.search(key);
+        for(Post post:posts){
+            post.setCountBookmark(interactionDAO.countBookmark(post.getPostId()));
+            post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
+            post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
+        }
         User user = userDAO.getUserByUsername((String) httpSession.getAttribute("username"));
         boolean stateNotice= notificationDAO.checkExitNewNotifications(user.getUserId());
         modelMap.addAttribute("stateNotice",stateNotice);
