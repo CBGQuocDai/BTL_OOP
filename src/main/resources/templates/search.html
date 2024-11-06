@@ -25,7 +25,7 @@
                 <h4 style="margin-bottom: 7px;margin-top:3px" th:text="${post.getType().toUpperCase()}"> </h4>
                 <a th:href="@{'/'+${post.getPostId()}}">
                     <div class="introPost">
-                        <img th:src="@{'/file/'+${post.getUserId()}+'.png'}" alt="">
+                        <img th:src="@{/image/{filename}(filename=${post.getUserId()}+'.png')}" alt="">
                         <div class="author">
                             <p th:text="${post.getNameAuthor()}+'     '+${post.getTime()}"></p>
                             <h3 th:text="${post.getTitle()}"></h3>
