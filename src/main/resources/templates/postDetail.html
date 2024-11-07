@@ -28,6 +28,32 @@
             font-size: 12px;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+        function connect() {
+            var socket = new SockJS('/gs-guide-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/topic/notifications', function (notification) {
+                    showNotification(JSON.parse(notification.body));
+                });
+            });
+        }
+        function showNotification(notice) {
+            let check= [[${userId}]];
+            const notification= document.getElementById('notification');
+            console.log(check,notice['userId'], check === notice['userId'])
+
+            if( check === notice['userId']) {
+                notification.src='../file/notification2.png';
+            }
+        }
+        window.onload = function() {
+            connect();
+        };
+    </script>
 </head>
 <body>
     <div id="hidden" style="display: none" class="reportForm">
@@ -67,7 +93,7 @@
                     <div class="author">
                         <div class="name">
                             <p th:text="${nameAuthor}"></p>
-                            <button th:text="${stateFollow==1} ? 'following': 'follow'" id="followButton" ></button>
+                            <button th:if="${userId!=author.getUserId()}" th:text="${stateFollow==1} ? 'following': 'follow'" id="followButton" ></button>
                         </div>
                         <ul class="star">
                             <li><img th:src="@{../file/follower.png}" alt=""> <span id="countFollow" th:text="${author.getCountFollow()}"></span></li>
@@ -84,7 +110,7 @@
                     </ul>
                 </div>
             </div>
-            <h3 class="title" th:text="${post.getTitle()}"></h3>
+            <h1 class="title" style="font-size: 2.5em;" th:text="${post.getTitle()}"></h1>
             <div class="content" th:utext="${post.getContent()}"></div>
             <div class="tag">
                 <ul>
@@ -114,10 +140,10 @@
                             <button><img class="up" th:id="'U'+${comment.getCommentId()}" th:src="${comment.getStateVote()==1} ? @{/file/arrow_up_select.png}: @{/file/arrow-up_view.png}" alt=""></button>
                             <span class="voteCnt" th:id="'state'+${comment.getStateVote()}" th:text="${comment.getCountVote()}"></span>
                             <button><img class="down" th:id="'D'+${comment.getCommentId()}" th:src="${comment.getStateVote()==-1} ? @{/file/arrow_down_select.png}: @{/file/arrow-down_view.png}" alt=""></button>
-                            <span class="reply" th:id="${comment.getCommentId()}">Reply</span>
+                            <span class="reply" th:name ="${comment.getUserId()}" th:id="${comment.getCommentId()}">Reply</span>
                             <span class="report" th:id="'C'+${comment.getCommentId()}">Report</span>
                         </div>
-                        <div class="writeReply"  th:id="'writeReply'+${comment.getCommentId()}">
+                        <div class="writeReply"   th:id="'writeReply'+${comment.getCommentId()}">
 
                         </div>
                         <div class="allReply">
@@ -348,7 +374,9 @@
                     contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
                 }
             })
-            .then( /* ... */ )
+            .then( editor => {
+                editorInstance = editor;  // Gán editor vào biến để dùng sau
+            })
             .catch( /* ... */ );
 
     </script>
@@ -472,7 +500,7 @@
             // event.preventDefault();
 
             const comment = document.getElementById('editor');
-            let content = comment.textContent;
+            let content = editorInstance.getData();
             console.log(content)
             comment.setAttribute('value','');
             let data = {
@@ -486,8 +514,8 @@
             let type ='[[${post.getType()}]]'
             let msg =""
             if(type ===  'post')
-                msg= '[[${username}]]'+ ' vừa bình luận bài viết của bạn'
-            else msg='[[${username}]]'+ ' vừa trả lời câu hỏi của bạn'
+                msg= '[[${username}]]'+ ' commented your post'
+            else msg='[[${username}]]'+ ' answered your question'
             let author = '[[${authorID}]]'
             if( parseInt(author) !== data.userId)
                 sendNotification(data.postId,[[${post.getUserId()}]],msg)
@@ -683,11 +711,15 @@
                             contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties']
                         }
                     })
-                        .then( /* ... */ )
+                        .then( editor => {
+                            editorRep = editor;  // Gán editor vào biến để dùng sau
+                        } )
                         .catch( /* ... */ );
+
+                    let Dst=parseInt(replyBtn[i].getAttribute('name'))
                     document.getElementById("submitReply").addEventListener("submit",() =>{
                         console.log("hello world")
-                        let content =document.getElementById(id).textContent;
+                        let content =editorRep.getData();
 
                         let data = {
                             parentComment: replyBtn[i].getAttribute('id'),
@@ -698,11 +730,11 @@
                         };
                         let type ='[[${post.getType()}]]';
                         let msg =""
-                            msg= '[[${username}]]'+ ' phản hồi bình luận của bạn'
+                            msg= '[[${username}]]'+ ' reply your comment'
                         let author = '[[${authorID}]]'
                         console.log(parseInt(author),data.userId,parseInt(author) !== data.userId)
-                        if( parseInt(author) !== data.userId)
-                            sendNotification(data.postId,[[${post.getUserId()}]],msg)
+                        if( Dst !== data.userId)
+                            sendNotification(data.postId,Dst,msg)
                         fetch('/createCmt', {
                             method: 'POST',
                             headers: {

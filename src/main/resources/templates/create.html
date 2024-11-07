@@ -17,6 +17,32 @@
             font-size: 1.3em;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+        function connect() {
+            var socket = new SockJS('/gs-guide-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/topic/notifications', function (notification) {
+                    showNotification(JSON.parse(notification.body));
+                });
+            });
+        }
+        function showNotification(notice) {
+            let check= [[${userId}]];
+            const notification= document.getElementById('notification');
+            console.log(check,notice['userId'], check === notice['userId'])
+
+            if( check === notice['userId']) {
+                notification.src='../file/notification2.png';
+            }
+        }
+        window.onload = function() {
+            connect();
+        };
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">

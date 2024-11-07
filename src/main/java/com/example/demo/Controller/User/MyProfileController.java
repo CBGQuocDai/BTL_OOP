@@ -64,7 +64,7 @@ public class MyProfileController {
         boolean check2 =userDAO.checkExitUsername(user.getUsername(),user.getUserId());
         if(check&check2){
             userDAO.updateUser(user);
-        return "redirect:/My_Profile/userInfo";}
+            return "redirect:/My_Profile/userInfo";}
         else {
             return "redirect:/My_Profile/userInfo?error=username or email already exists";
         }
@@ -136,13 +136,12 @@ public class MyProfileController {
         }
 
         User user = userDAO.getUserByUserId(userId);
-
         if (!user.getPassword().equals(oldPassword)) {
-            return "Vui lòng nhập mật khẩu khác mật khẩu cũ";
+            return "redirect:/My_Profile/userInfo?error=Old password is incorrect";
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            return "Mật khẩu không trùng khớp";
+            return "redirect:/My_Profile/userInfo?error=Passwords do not match";
         }
 
         user.setPassword(newPassword);
@@ -177,4 +176,3 @@ public class MyProfileController {
     }
 
 }
-

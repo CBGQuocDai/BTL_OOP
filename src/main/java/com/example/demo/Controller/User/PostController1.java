@@ -231,7 +231,7 @@ public class PostController1 {
                     notice.setUserId(x);
                     notice.setPostId(postId);
                     notice.setTime(timestamp);
-                    notice.setMessage(String.format("%s vừa đăng một bài viết mới",postSubmit.getNameAuthor()));
+                    notice.setMessage(String.format("%s wrote a new post",postSubmit.getNameAuthor()));
                     notificationDAO.save(notice);
                     messagingTemplate.convertAndSend("/topic/notifications", notice);
                 }

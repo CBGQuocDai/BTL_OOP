@@ -101,6 +101,32 @@
             font-size: 12px;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        var stompClient = null;
+        function connect() {
+            var socket = new SockJS('/gs-guide-websocket');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/topic/notifications', function (notification) {
+                    showNotification(JSON.parse(notification.body));
+                });
+            });
+        }
+        function showNotification(notice) {
+            let check= [[${userId}]];
+            const notification= document.getElementById('notification');
+            console.log(check,notice['userId'], check === notice['userId'])
+
+            if( check === notice['userId']) {
+                notification.src='../file/notification2.png';
+            }
+        }
+        window.onload = function() {
+            connect();
+        };
+    </script>
 </head>
 <body>
 <div th:replace="fragments/header::header"></div>

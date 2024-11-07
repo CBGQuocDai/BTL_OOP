@@ -49,6 +49,7 @@ public class UserController {
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
         modelMap.addAttribute("posts",posts);
+        modelMap.addAttribute("userId",idd);
         modelMap.addAttribute("avatarUser",user.getAvatar());
         modelMap.addAttribute("stateNotice",stateNotice);
         modelMap.addAttribute("stateFollow",stateFollow);
@@ -73,6 +74,7 @@ public class UserController {
             post.setCountVote(interactionDAO.getNumVote(String.valueOf(post.getPostId())));
             post.setCountComment(commentDAO.countNumberComment(post.getPostId()));
         }
+        modelMap.addAttribute("userId",idd);
         modelMap.addAttribute("posts",posts);
         modelMap.addAttribute("avatarUser",user.getAvatar());
         modelMap.addAttribute("stateNotice",stateNotice);
@@ -97,6 +99,7 @@ public class UserController {
         modelMap.addAttribute("stateFollow",stateFollow);
         modelMap.addAttribute("user2",user2);
         modelMap.addAttribute("user",user);
+        modelMap.addAttribute("userId",idd);
         return "user_contact";
     }
 }

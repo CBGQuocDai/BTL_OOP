@@ -104,10 +104,9 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-9">
+                <div class="col-9" style="height: 87vh;overflow-y: scroll;">
                     <div class="inner-content">
                         <div th:each="post : ${posts}" class="inner-box d-flex p-4" style="display: flex;flex-direction: row;justify-content: space-between">
-
                             <div class="inner-content">
                                 <a style="text-decoration: none; color:black;" th:href="@{'../'+${post.getPostId()}}">
                                     <div class="inner-head mb-2">

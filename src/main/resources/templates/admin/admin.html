@@ -28,7 +28,7 @@
     </section>
 
     <!-- Main content -->
-      <section class="content" style="background-color: white;overflow: scroll">
+      <section class="content" style="background-color: white;overflow-y: scroll;height: 75vh" >
 
       <!-- Default box -->
       <div class="col-xs-12">
@@ -57,7 +57,7 @@
                 <td th:text="${user.username}">Username</td>
                 <td th:text="${user.email}">Email</td>
                 <!-- Display gender based on value (assuming 1 is Male, 0 is Female) -->
-                <td th:text="${user.gender == 1 ? 'Male' : 'Female'}">Gender</td>
+                <td th:text="${user.gender}">Gender</td>
                 <td th:text="${user.role}">Role</td>
                 <td>
                     <!-- Link to edit user -->

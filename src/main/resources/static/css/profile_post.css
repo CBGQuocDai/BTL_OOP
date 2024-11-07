@@ -126,3 +126,6 @@ body {
 .inner-box {
     border-bottom: 1px solid black;
 }
+.col-9::-webkit-scrollbar{
+    display: none;
+}

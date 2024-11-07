@@ -51,7 +51,7 @@
             <span th:style="${index == 'follow'} ? 'background-color:#e8e8e8': 'background-color:white'" ><a th:href="'/'+${type}+'/follow'">Follow</a> </span>
             <span th:style="${index == 'bookmark'} ? 'background-color:#e8e8e8': 'background-color:white'"><a th:href="'/'+${type}+'/bookmark'">Bookmark</a></span>
         </div>
-        <ul class="listPost">
+        <ul class="listPost" style="overflow-y:scroll;height: 75vh;">
            <li th:each="post:${Posts}" class="POST" th:id="${post.getPostId()}">
                <a th:href="@{'/'+${post.getPostId()}}">
                    <div class="introPost">
